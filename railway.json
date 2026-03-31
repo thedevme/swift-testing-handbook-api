@@ -1,0 +1,8 @@
+{
+  "build": { "builder": "NIXPACKS" },
+  "deploy": {
+    "startCommand": "bundle exec rails server -p $PORT",
+    "healthcheckPath": "/health",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
