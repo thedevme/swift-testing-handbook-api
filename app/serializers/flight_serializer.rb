@@ -16,12 +16,8 @@ class FlightSerializer
       delay_minutes: @flight.delay_minutes,
       diverted_to: @flight.diverted_to,
       is_international: @flight.route.is_international,
-      aircraft: { model: @flight.aircraft.model },
-      pricing: {
-        economy: @flight.economy_price_cents / 100,
-        comfort_plus: @flight.comfort_plus_price_cents / 100,
-        business: @flight.business_price_cents / 100
-      },
+      aircraft: aircraft_json,
+      pricing: pricing_json,
       seats_available: seats_summary
     }
   end
@@ -36,13 +32,48 @@ class FlightSerializer
     }
   end
 
+  def aircraft_json
+    {
+      model: @flight.aircraft.model,
+      aisle_type: @flight.aircraft.aisle_type,
+      is_double_deck: @flight.aircraft.model.include?('A380')
+    }
+  end
+
+  def pricing_json
+    pricing = {
+      economy: @flight.economy_price_cents / 100,
+      comfort_plus: @flight.comfort_plus_price_cents / 100
+    }
+
+    # Include business if available (international flights)
+    if @flight.business_price_cents && @flight.business_price_cents > 0
+      pricing[:business] = @flight.business_price_cents / 100
+    end
+
+    # Include first if available (domestic flights)
+    if @flight.first_price_cents && @flight.first_price_cents > 0
+      pricing[:first] = @flight.first_price_cents / 100
+    end
+
+    pricing
+  end
+
   def seats_summary
     seats = @flight.seats
-    {
+    summary = {
       economy: seats.economy.available.count,
       comfort_plus: seats.comfort_plus.available.count,
-      business: seats.business.available.count,
       total: seats.available.count
     }
+
+    # Include business/first counts if aircraft has them
+    business_count = seats.business.available.count
+    first_count = seats.first_class.available.count
+
+    summary[:business] = business_count if business_count > 0 || @flight.aircraft.business_seats > 0
+    summary[:first] = first_count if first_count > 0 || @flight.aircraft.first_seats > 0
+
+    summary
   end
 end

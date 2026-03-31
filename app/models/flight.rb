@@ -18,8 +18,11 @@ class Flight < ApplicationRecord
 
   validates :flight_number, presence: true
   validates :scheduled_departure_at, :scheduled_arrival_at, presence: true
-  validates :economy_price_cents, :comfort_plus_price_cents, :business_price_cents,
+  validates :economy_price_cents, :comfort_plus_price_cents,
             presence: true, numericality: { greater_than: 0 }
+  # Business and first are optional - not all aircraft have both
+  validates :business_price_cents, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :first_price_cents, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   scope :bookable, -> { where.not(status: [:cancelled, :diverted, :departed, :arrived]) }
 

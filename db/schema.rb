@@ -10,15 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_31_080824) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "aircraft", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "aisle_type", default: "single"
     t.integer "business_seats", null: false
     t.integer "comfort_plus_seats", null: false
     t.datetime "created_at", null: false
     t.integer "economy_seats", null: false
+    t.integer "first_seats", default: 0
     t.string "model", null: false
     t.integer "total_seats", null: false
     t.datetime "updated_at", null: false
@@ -71,6 +73,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_080824) do
     t.string "diverted_to", limit: 3
     t.integer "duration_minutes", null: false
     t.integer "economy_price_cents", null: false
+    t.integer "first_price_cents"
     t.string "flight_number", limit: 10, null: false
     t.uuid "route_id", null: false
     t.datetime "scheduled_arrival_at", null: false
@@ -113,14 +116,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_080824) do
   end
 
   create_table "seats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "column_letter", limit: 1, default: "A", null: false
     t.datetime "created_at", null: false
+    t.string "deck", limit: 10, default: "main", null: false
     t.string "features", default: [], array: true
     t.uuid "flight_id", null: false
     t.boolean "is_available", default: true, null: false
+    t.integer "row", default: 1, null: false
     t.string "seat_class", null: false
     t.string "seat_number", limit: 4, null: false
     t.string "seat_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["deck"], name: "index_seats_on_deck"
     t.index ["flight_id", "seat_number"], name: "index_seats_on_flight_id_and_seat_number", unique: true
     t.index ["flight_id"], name: "index_seats_on_flight_id"
     t.index ["is_available"], name: "index_seats_on_is_available"

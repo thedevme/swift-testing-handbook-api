@@ -1,13 +1,132 @@
 puts "Seeding database..."
 
-# Aircraft
-aircraft_data = [
-  { model: 'Boeing 737-800', economy_seats: 138, comfort_plus_seats: 14, business_seats: 8, total_seats: 160 },
-  { model: 'Airbus A320', economy_seats: 132, comfort_plus_seats: 12, business_seats: 6, total_seats: 150 },
-  { model: 'Boeing 767-300', economy_seats: 180, comfort_plus_seats: 21, business_seats: 17, total_seats: 218 }
+# Clear existing data
+puts "Clearing existing data..."
+Booking.delete_all
+Seat.delete_all
+Flight.delete_all
+Route.delete_all
+Aircraft.delete_all
+Airport.delete_all
+
+# Aircraft - 7 types with detailed configurations
+aircraft_configs = [
+  {
+    model: 'Boeing 737-800',
+    economy_seats: 138,
+    comfort_plus_seats: 14,
+    business_seats: 0,
+    first_seats: 8,
+    total_seats: 160,
+    aisle_type: 'single',
+    layout: {
+      first: { rows: 1..2, columns: %w[A C D F], layout: '2-2' },
+      comfort_plus: { rows: 7..9, columns: %w[A B C D E F], layout: '3-3' },
+      economy: { rows: 10..32, columns: %w[A B C D E F], layout: '3-3' }
+    }
+  },
+  {
+    model: 'Airbus A320',
+    economy_seats: 132,
+    comfort_plus_seats: 12,
+    business_seats: 0,
+    first_seats: 6,
+    total_seats: 150,
+    aisle_type: 'single',
+    layout: {
+      first: { rows: 1..2, columns: %w[A C D F], layout: '2-2' },
+      comfort_plus: { rows: 7..8, columns: %w[A B C D E F], layout: '3-3' },
+      economy: { rows: 9..30, columns: %w[A B C D E F], layout: '3-3' }
+    }
+  },
+  {
+    model: 'Boeing 757-200',
+    economy_seats: 176,
+    comfort_plus_seats: 20,
+    business_seats: 0,
+    first_seats: 12,
+    total_seats: 208,
+    aisle_type: 'single',
+    layout: {
+      first: { rows: 1..3, columns: %w[A C D F], layout: '2-2' },
+      comfort_plus: { rows: 8..11, columns: %w[A B C D E F], layout: '3-3' },
+      economy: { rows: 12..40, columns: %w[A B C D E F], layout: '3-3' }
+    }
+  },
+  {
+    model: 'Airbus A330-300',
+    economy_seats: 198,
+    comfort_plus_seats: 24,
+    business_seats: 20,
+    first_seats: 0,
+    total_seats: 242,
+    aisle_type: 'twin',
+    layout: {
+      business: { rows: 1..5, columns: %w[A C D E G K], layout: '2-2-2' },
+      comfort_plus: { rows: 8..10, columns: %w[A B D E F G J K], layout: '2-4-2' },
+      economy: { rows: 11..35, columns: %w[A B D E F G J K], layout: '2-4-2' }
+    }
+  },
+  {
+    model: 'Boeing 777-200',
+    economy_seats: 226,
+    comfort_plus_seats: 28,
+    business_seats: 28,
+    first_seats: 0,
+    total_seats: 282,
+    aisle_type: 'twin',
+    layout: {
+      business: { rows: 1..7, columns: %w[A C D E G J K], layout: '2-3-2' },
+      comfort_plus: { rows: 8..11, columns: %w[A B C D E F G H J], layout: '3-3-3' },
+      economy: { rows: 12..40, columns: %w[A B C D E F G H J], layout: '3-3-3' }
+    }
+  },
+  {
+    model: 'Airbus A380-800',
+    economy_seats: 399,
+    comfort_plus_seats: 64,
+    business_seats: 76,
+    first_seats: 14,
+    total_seats: 553,
+    aisle_type: 'twin',
+    layout: {
+      # Upper deck
+      first: { rows: 1..7, columns: %w[A D G K], deck: 'upper', layout: '1-2-1' },
+      business: { rows: 8..26, columns: %w[A C D E F G J K], deck: 'upper', layout: '2-4-2' },
+      # Main deck
+      comfort_plus: { rows: 11..16, columns: %w[A B C D E F G H J K], deck: 'main', layout: '3-4-3' },
+      economy: { rows: 17..51, columns: %w[A B C D E F G H J K], deck: 'main', layout: '3-4-3' }
+    }
+  },
+  {
+    model: 'Boeing 767-300',
+    economy_seats: 180,
+    comfort_plus_seats: 21,
+    business_seats: 17,
+    first_seats: 0,
+    total_seats: 218,
+    aisle_type: 'twin',
+    layout: {
+      business: { rows: 1..4, columns: %w[A C D E G K], layout: '2-2-2' },
+      comfort_plus: { rows: 8..10, columns: %w[A B D E F G K], layout: '2-3-2' },
+      economy: { rows: 11..36, columns: %w[A B D E F G K], layout: '2-3-2' }
+    }
+  }
 ]
 
-aircraft = aircraft_data.map { |data| Aircraft.find_or_create_by!(model: data[:model]) { |a| a.assign_attributes(data) } }
+aircraft = {}
+aircraft_configs.each do |config|
+  ac = Aircraft.create!(
+    model: config[:model],
+    economy_seats: config[:economy_seats],
+    comfort_plus_seats: config[:comfort_plus_seats],
+    business_seats: config[:business_seats],
+    first_seats: config[:first_seats],
+    total_seats: config[:total_seats],
+    aisle_type: config[:aisle_type]
+  )
+  aircraft[config[:model]] = { record: ac, layout: config[:layout] }
+end
 puts "Created #{aircraft.count} aircraft"
 
 # Airports
@@ -34,137 +153,165 @@ airports_data = [
   { code: 'MEX', name: 'Mexico City International', city: 'Mexico City', country: 'Mexico', latitude: 19.4363, longitude: -99.0721, is_international: true },
   { code: 'AMS', name: 'Amsterdam Schiphol', city: 'Amsterdam', country: 'Netherlands', latitude: 52.3105, longitude: 4.7683, is_international: true },
   { code: 'SIN', name: 'Singapore Changi', city: 'Singapore', country: 'Singapore', latitude: 1.3644, longitude: 103.9915, is_international: true },
-  { code: 'GRU', name: 'São Paulo-Guarulhos', city: 'São Paulo', country: 'Brazil', latitude: -23.4356, longitude: -46.4731, is_international: true }
+  { code: 'GRU', name: 'São Paulo-Guarulhos', city: 'São Paulo', country: 'Brazil', latitude: -23.4356, longitude: -46.4731, is_international: true },
+  { code: 'DUB', name: 'Dublin Airport', city: 'Dublin', country: 'Ireland', latitude: 53.4264, longitude: -6.2499, is_international: true }
 ]
 
 airports = {}
 airports_data.each do |data|
-  airports[data[:code]] = Airport.find_or_create_by!(code: data[:code]) { |a| a.assign_attributes(data) }
+  airports[data[:code]] = Airport.create!(data)
 end
 puts "Created #{airports.count} airports"
 
-# Routes
-boeing_737 = Aircraft.find_by!(model: 'Boeing 737-800')
-airbus_a320 = Aircraft.find_by!(model: 'Airbus A320')
-boeing_767 = Aircraft.find_by!(model: 'Boeing 767-300')
-
+# Routes with aircraft assignments based on route type
 routes_data = [
-  # Domestic Short-Haul
-  { origin: 'TPA', destination: 'ATL', duration: 90, departures: 8, prefix: 'DL1', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'MIA', duration: 60, departures: 8, prefix: 'DL2', aircraft: airbus_a320 },
-  { origin: 'TPA', destination: 'ORD', duration: 150, departures: 5, prefix: 'UA3', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'JFK', duration: 180, departures: 5, prefix: 'AA4', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'DFW', duration: 150, departures: 5, prefix: 'AA5', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'BOS', duration: 180, departures: 4, prefix: 'UA6', aircraft: boeing_737 },
-  { origin: 'DEN', destination: 'ORD', duration: 150, departures: 5, prefix: 'WN7', aircraft: airbus_a320 },
-  { origin: 'SEA', destination: 'LAX', duration: 150, departures: 5, prefix: 'AS8', aircraft: airbus_a320 },
-  { origin: 'DEN', destination: 'LAX', duration: 150, departures: 5, prefix: 'AS9', aircraft: airbus_a320 },
-  { origin: 'ATL', destination: 'ORD', duration: 120, departures: 5, prefix: 'DL10', aircraft: boeing_737 },
-  # Domestic Medium-Haul
-  { origin: 'TPA', destination: 'LAX', duration: 318, departures: 3, prefix: 'UA11', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'SEA', duration: 330, departures: 2, prefix: 'UA12', aircraft: boeing_737 },
-  { origin: 'TPA', destination: 'LAS', duration: 270, departures: 3, prefix: 'DL13', aircraft: boeing_737 },
-  { origin: 'JFK', destination: 'LAX', duration: 330, departures: 4, prefix: 'AA14', aircraft: boeing_737 },
-  { origin: 'DFW', destination: 'LAX', duration: 210, departures: 4, prefix: 'AA15', aircraft: boeing_737 },
-  { origin: 'LAS', destination: 'JFK', duration: 300, departures: 3, prefix: 'DL16', aircraft: boeing_737 },
-  { origin: 'ORD', destination: 'LAX', duration: 240, departures: 4, prefix: 'UA17', aircraft: boeing_737 },
-  { origin: 'ATL', destination: 'LAX', duration: 270, departures: 3, prefix: 'DL18', aircraft: boeing_737 },
-  # International Long-Haul
-  { origin: 'JFK', destination: 'LHR', duration: 420, departures: 3, prefix: 'UA19', aircraft: boeing_767, international: true },
-  { origin: 'JFK', destination: 'CDG', duration: 450, departures: 3, prefix: 'AF20', aircraft: boeing_767, international: true },
-  { origin: 'BOS', destination: 'LHR', duration: 390, departures: 3, prefix: 'BA21', aircraft: boeing_767, international: true },
-  { origin: 'MIA', destination: 'LHR', duration: 540, departures: 3, prefix: 'VA22', aircraft: boeing_767, international: true },
-  { origin: 'ATL', destination: 'CDG', duration: 540, departures: 2, prefix: 'AF23', aircraft: boeing_767, international: true },
-  { origin: 'ORD', destination: 'LHR', duration: 510, departures: 3, prefix: 'UA24', aircraft: boeing_767, international: true },
-  { origin: 'MIA', destination: 'GRU', duration: 570, departures: 3, prefix: 'LA25', aircraft: boeing_767, international: true },
-  { origin: 'LAX', destination: 'NRT', duration: 660, departures: 2, prefix: 'UA26', aircraft: boeing_767, international: true },
-  { origin: 'SEA', destination: 'NRT', duration: 600, departures: 2, prefix: 'AS27', aircraft: boeing_767, international: true },
-  { origin: 'LAX', destination: 'SYD', duration: 900, departures: 2, prefix: 'QF28', aircraft: boeing_767, international: true }
+  # Short Domestic (Boeing 737-800, Airbus A320)
+  { origin: 'TPA', destination: 'ATL', duration: 90, departures: 8, prefix: 'DL1', aircraft: 'Boeing 737-800' },
+  { origin: 'TPA', destination: 'MIA', duration: 60, departures: 8, prefix: 'DL2', aircraft: 'Airbus A320' },
+  { origin: 'TPA', destination: 'ORD', duration: 150, departures: 5, prefix: 'UA3', aircraft: 'Boeing 737-800' },
+  { origin: 'TPA', destination: 'JFK', duration: 180, departures: 5, prefix: 'AA4', aircraft: 'Boeing 737-800' },
+  { origin: 'TPA', destination: 'DFW', duration: 150, departures: 5, prefix: 'AA5', aircraft: 'Airbus A320' },
+  { origin: 'TPA', destination: 'BOS', duration: 180, departures: 4, prefix: 'UA6', aircraft: 'Boeing 737-800' },
+  { origin: 'DEN', destination: 'ORD', duration: 150, departures: 5, prefix: 'WN7', aircraft: 'Airbus A320' },
+  { origin: 'SEA', destination: 'LAX', duration: 150, departures: 5, prefix: 'AS8', aircraft: 'Airbus A320' },
+  { origin: 'DEN', destination: 'LAX', duration: 150, departures: 5, prefix: 'AS9', aircraft: 'Boeing 737-800' },
+  { origin: 'ATL', destination: 'ORD', duration: 120, departures: 5, prefix: 'DL10', aircraft: 'Boeing 737-800' },
+
+  # Medium Domestic (Boeing 757-200)
+  { origin: 'TPA', destination: 'LAX', duration: 318, departures: 3, prefix: 'UA11', aircraft: 'Boeing 757-200' },
+  { origin: 'TPA', destination: 'SEA', duration: 330, departures: 2, prefix: 'UA12', aircraft: 'Boeing 757-200' },
+  { origin: 'TPA', destination: 'LAS', duration: 270, departures: 3, prefix: 'DL13', aircraft: 'Boeing 757-200' },
+  { origin: 'JFK', destination: 'LAX', duration: 330, departures: 4, prefix: 'AA14', aircraft: 'Boeing 757-200' },
+  { origin: 'DFW', destination: 'LAX', duration: 210, departures: 4, prefix: 'AA15', aircraft: 'Boeing 757-200' },
+  { origin: 'LAS', destination: 'JFK', duration: 300, departures: 3, prefix: 'DL16', aircraft: 'Boeing 757-200' },
+  { origin: 'ORD', destination: 'LAX', duration: 240, departures: 4, prefix: 'UA17', aircraft: 'Boeing 757-200' },
+  { origin: 'ATL', destination: 'LAX', duration: 270, departures: 3, prefix: 'DL18', aircraft: 'Boeing 757-200' },
+
+  # Transatlantic (Airbus A330-300) - LHR, CDG, DUB, AMS
+  { origin: 'JFK', destination: 'LHR', duration: 420, departures: 3, prefix: 'UA19', aircraft: 'Airbus A330-300', international: true },
+  { origin: 'JFK', destination: 'CDG', duration: 450, departures: 3, prefix: 'AF20', aircraft: 'Airbus A330-300', international: true },
+  { origin: 'BOS', destination: 'LHR', duration: 390, departures: 3, prefix: 'BA21', aircraft: 'Airbus A330-300', international: true },
+  { origin: 'ORD', destination: 'LHR', duration: 510, departures: 3, prefix: 'UA24', aircraft: 'Airbus A330-300', international: true },
+  { origin: 'JFK', destination: 'AMS', duration: 430, departures: 2, prefix: 'KL29', aircraft: 'Airbus A330-300', international: true },
+  { origin: 'JFK', destination: 'DUB', duration: 390, departures: 2, prefix: 'EI30', aircraft: 'Airbus A330-300', international: true },
+
+  # Heavy International (Boeing 777-200) - NRT, SYD, DXB, GRU, SIN
+  { origin: 'LAX', destination: 'NRT', duration: 660, departures: 2, prefix: 'UA26', aircraft: 'Boeing 777-200', international: true },
+  { origin: 'SEA', destination: 'NRT', duration: 600, departures: 2, prefix: 'AS27', aircraft: 'Boeing 777-200', international: true },
+  { origin: 'LAX', destination: 'SYD', duration: 900, departures: 2, prefix: 'QF28', aircraft: 'Boeing 777-200', international: true },
+  { origin: 'MIA', destination: 'GRU', duration: 570, departures: 3, prefix: 'LA25', aircraft: 'Boeing 777-200', international: true },
+  { origin: 'LAX', destination: 'SIN', duration: 1080, departures: 1, prefix: 'SQ31', aircraft: 'Boeing 777-200', international: true },
+
+  # JFK → DXB only (Airbus A380-800)
+  { origin: 'JFK', destination: 'DXB', duration: 780, departures: 2, prefix: 'EK32', aircraft: 'Airbus A380-800', international: true },
+
+  # Remaining International (Boeing 767-300)
+  { origin: 'MIA', destination: 'LHR', duration: 540, departures: 3, prefix: 'VA22', aircraft: 'Boeing 767-300', international: true },
+  { origin: 'ATL', destination: 'CDG', duration: 540, departures: 2, prefix: 'AF23', aircraft: 'Boeing 767-300', international: true }
 ]
 
 routes = []
 routes_data.each do |data|
-  route = Route.find_or_create_by!(
+  ac_data = aircraft[data[:aircraft]]
+  route = Route.create!(
     origin: airports[data[:origin]],
-    destination: airports[data[:destination]]
-  ) do |r|
-    r.aircraft = data[:aircraft]
-    r.duration_minutes = data[:duration]
-    r.departures_per_day = data[:departures]
-    r.flight_number_prefix = data[:prefix]
-    r.is_international = data[:international] || false
-  end
-  routes << route
+    destination: airports[data[:destination]],
+    aircraft: ac_data[:record],
+    duration_minutes: data[:duration],
+    departures_per_day: data[:departures],
+    flight_number_prefix: data[:prefix],
+    is_international: data[:international] || false
+  )
+  routes << { route: route, aircraft_layout: ac_data[:layout] }
 end
 puts "Created #{routes.count} routes"
 
-# Generate seat map for a flight
-def generate_seats(flight, aircraft)
+# Helper to determine seat type based on column and layout
+def seat_type_for_column(column, layout)
+  case layout
+  when '2-2'
+    %w[A F].include?(column) ? 'window' : 'aisle'
+  when '3-3'
+    case column
+    when 'A', 'F' then 'window'
+    when 'B', 'E' then 'middle'
+    else 'aisle'
+    end
+  when '2-3-2'
+    case column
+    when 'A', 'K' then 'window'
+    when 'C', 'G' then 'aisle'
+    else 'middle'
+    end
+  when '2-4-2'
+    case column
+    when 'A', 'K' then 'window'
+    when 'B', 'C', 'G', 'J' then 'aisle'
+    else 'middle'
+    end
+  when '2-2-2'
+    case column
+    when 'A', 'K' then 'window'
+    else 'aisle'
+    end
+  when '3-3-3'
+    case column
+    when 'A', 'J' then 'window'
+    when 'C', 'D', 'F', 'G' then 'aisle'
+    else 'middle'
+    end
+  when '1-2-1'
+    case column
+    when 'A', 'K' then 'window'
+    else 'aisle'
+    end
+  when '3-4-3'
+    case column
+    when 'A', 'K' then 'window'
+    when 'C', 'D', 'G', 'H' then 'aisle'
+    else 'middle'
+    end
+  else
+    'middle'
+  end
+end
+
+# Helper to generate features for a seat
+def features_for_seat(seat_class, row, is_exit_row = false)
+  features = []
+  features << 'extra_legroom' if %w[first business comfort_plus].include?(seat_class) || is_exit_row
+  features << 'lie_flat' if %w[first business].include?(seat_class)
+  features << 'power_outlet' if %w[first business comfort_plus].include?(seat_class)
+  features << 'premium_entertainment' if %w[first business].include?(seat_class)
+  features
+end
+
+# Generate seats for a flight based on aircraft layout
+def generate_seats_for_flight(flight, layout)
   seats = []
-  row = 1
+  now = Time.current
 
-  # Business class
-  aircraft.business_seats.times do |i|
-    seat_letter = ['A', 'C', 'D', 'F'][i % 4]
-    if i % 4 == 0 && i > 0
-      row += 1
-    end
-    seats << {
-      flight_id: flight.id,
-      seat_number: "#{row}#{seat_letter}",
-      seat_class: 'business',
-      seat_type: ['A', 'F'].include?(seat_letter) ? 'window' : 'aisle',
-      features: ['extra_legroom', 'lie_flat'],
-      is_available: true,
-      created_at: Time.current,
-      updated_at: Time.current
-    }
-  end
-  row += 1
+  layout.each do |seat_class, config|
+    deck = config[:deck] || 'main'
+    section_layout = config[:layout]
 
-  # Comfort+ class
-  aircraft.comfort_plus_seats.times do |i|
-    seat_letter = ['A', 'B', 'C', 'D', 'E', 'F'][i % 6]
-    if i % 6 == 0 && i > 0
-      row += 1
+    config[:rows].each do |row|
+      config[:columns].each do |col|
+        seats << {
+          flight_id: flight.id,
+          seat_number: "#{row}#{col}",
+          row: row,
+          column_letter: col,
+          deck: deck,
+          seat_class: seat_class.to_s,
+          seat_type: seat_type_for_column(col, section_layout),
+          features: features_for_seat(seat_class.to_s, row),
+          is_available: true,
+          created_at: now,
+          updated_at: now
+        }
+      end
     end
-    seats << {
-      flight_id: flight.id,
-      seat_number: "#{row}#{seat_letter}",
-      seat_class: 'comfort_plus',
-      seat_type: case seat_letter
-                 when 'A', 'F' then 'window'
-                 when 'B', 'E' then 'middle'
-                 else 'aisle'
-                 end,
-      features: ['extra_legroom'],
-      is_available: true,
-      created_at: Time.current,
-      updated_at: Time.current
-    }
-  end
-  row += 1
-
-  # Economy class
-  aircraft.economy_seats.times do |i|
-    seat_letter = ['A', 'B', 'C', 'D', 'E', 'F'][i % 6]
-    if i % 6 == 0 && i > 0
-      row += 1
-    end
-    seats << {
-      flight_id: flight.id,
-      seat_number: "#{row}#{seat_letter}",
-      seat_class: 'economy',
-      seat_type: case seat_letter
-                 when 'A', 'F' then 'window'
-                 when 'B', 'E' then 'middle'
-                 else 'aisle'
-                 end,
-      features: [],
-      is_available: true,
-      created_at: Time.current,
-      updated_at: Time.current
-    }
   end
 
   seats
@@ -175,15 +322,16 @@ puts "Creating flights and seats..."
 flight_count = 0
 seat_count = 0
 
-# Generate flights for the next 7 days
 base_date = Date.current
 
-routes.each do |route|
+routes.each do |route_data|
+  route = route_data[:route]
+  layout = route_data[:aircraft_layout]
+
   (0..6).each do |day_offset|
     date = base_date + day_offset.days
 
     route.departures_per_day.times do |departure_num|
-      # Spread departures throughout the day
       hour = (departure_num * 24 / route.departures_per_day) % 24
       minute = [0, 15, 30, 45].sample
 
@@ -192,33 +340,42 @@ routes.each do |route|
 
       flight_number = "#{route.flight_number_prefix}#{sprintf('%02d', departure_num)}"
 
-      # Calculate pricing
+      # Calculate pricing based on route type
       international = route.is_international
       economy_price = (international ? 59900 : 29900) + rand(-5000..5000)
       comfort_price = (international ? 89900 : 44900) + rand(-7500..7500)
-      business_price = (international ? 249900 : 89900) + rand(-15000..15000)
+      business_price = international ? (149900 + rand(-15000..15000)) : nil
+      first_price = international ? nil : (79900 + rand(-10000..10000))
 
-      flight = Flight.find_or_create_by!(
+      # A380 and heavy international have premium pricing
+      if route.aircraft.model.include?('A380')
+        first_price = 299900 + rand(-30000..30000)
+        business_price = 199900 + rand(-20000..20000)
+      elsif route.aircraft.model.include?('777')
+        business_price = 179900 + rand(-18000..18000)
+      end
+
+      flight = Flight.create!(
         flight_number: flight_number,
-        scheduled_departure_at: departure_time
-      ) do |f|
-        f.route = route
-        f.aircraft = route.aircraft
-        f.scheduled_arrival_at = arrival_time
-        f.duration_minutes = route.duration_minutes
-        f.status = ['on_time', 'on_time', 'on_time', 'delayed', 'scheduled'].sample
-        f.delay_minutes = f.status == 'delayed' ? rand(30..120) : nil
-        f.economy_price_cents = economy_price
-        f.comfort_plus_price_cents = comfort_price
-        f.business_price_cents = business_price
-      end
+        route: route,
+        aircraft: route.aircraft,
+        scheduled_departure_at: departure_time,
+        scheduled_arrival_at: arrival_time,
+        duration_minutes: route.duration_minutes,
+        status: ['on_time', 'on_time', 'on_time', 'delayed', 'scheduled'].sample,
+        delay_minutes: nil,
+        economy_price_cents: economy_price,
+        comfort_plus_price_cents: comfort_price,
+        business_price_cents: business_price || 0,
+        first_price_cents: first_price || 0
+      )
 
-      # Create seats if they don't exist
-      if flight.seats.empty?
-        seats_data = generate_seats(flight, route.aircraft)
-        Seat.insert_all(seats_data)
-        seat_count += seats_data.count
-      end
+      flight.update!(delay_minutes: rand(30..120)) if flight.status == 'delayed'
+
+      # Generate and insert seats
+      seats_data = generate_seats_for_flight(flight, layout)
+      Seat.insert_all(seats_data) if seats_data.any?
+      seat_count += seats_data.count
 
       flight_count += 1
     end
@@ -245,8 +402,12 @@ Flight.where.not(status: 'cancelled').order('RANDOM()').first.update!(status: 'c
 puts "Ensured at least 1 cancelled flight"
 
 puts "\nSeeding complete!"
-puts "  #{Aircraft.count} aircraft"
+puts "  #{Aircraft.count} aircraft types"
 puts "  #{Airport.count} airports"
 puts "  #{Route.count} routes"
 puts "  #{Flight.count} flights"
 puts "  #{Seat.count} seats"
+puts "\nAircraft breakdown:"
+Aircraft.all.each do |ac|
+  puts "  #{ac.model}: #{ac.total_seats} seats (#{ac.aisle_type} aisle)"
+end
