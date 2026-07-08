@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <path d="M50 20 L60 50 L50 88 L40 50 Z" fill="#E03B3B"/>
+    <path d="M18 54 L48 44 L86 54 L48 64 Z" fill="#F2A33F"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans Condensed" font-weight="bold" font-size="32"
+        fill="#C42121" letter-spacing="4">ALTAIR</text>
+</svg>

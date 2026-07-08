@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <circle cx="50" cy="54" r="30" fill="none" stroke="#16324F" stroke-width="7"/>
+    <ellipse cx="50" cy="54" rx="13" ry="30" fill="none" stroke="#16324F" stroke-width="5"/>
+    <path d="M22 54 H78" stroke="#E8841A" stroke-width="6"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans" font-weight="bold" font-size="31"
+        fill="#16324F" >Meridian</text>
+</svg>

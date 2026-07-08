@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: ENV.fetch('SENDGRID_FROM_EMAIL', 'api@swifttestinghandbook.com')
   layout "mailer"
 end

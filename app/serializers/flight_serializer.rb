@@ -1,12 +1,14 @@
 class FlightSerializer
-  def initialize(flight)
+  def initialize(flight, include_weather: true)
     @flight = flight
+    @include_weather = include_weather
   end
 
   def as_json
     {
       id: @flight.id,
       flight_number: @flight.flight_number,
+      airline: airline_json,
       origin: airport_json(@flight.origin),
       destination: airport_json(@flight.destination),
       departure_at: @flight.scheduled_departure_at.iso8601,
@@ -25,10 +27,45 @@ class FlightSerializer
   private
 
   def airport_json(airport)
-    {
+    json = {
       code: airport.code,
       name: airport.name,
       city: airport.city
+    }
+
+    # Add weather if requested and available
+    if @include_weather
+      departure_date = @flight.scheduled_departure_at.to_date
+      weather = airport.weather_for(departure_date)
+
+      if weather
+        json[:weather] = {
+          temperature: weather.temperature_f,
+          feels_like: weather.feels_like_f,
+          condition: weather.condition,
+          icon: weather.icon,
+          humidity: weather.humidity_percent,
+          precipitation_chance: weather.precipitation_chance_percent
+        }
+      end
+    end
+
+    json
+  end
+
+  def airline_json
+    return nil unless @flight.route.airline
+
+    airline = @flight.route.airline
+    base_url = "http://localhost:3001" # TODO: Make this dynamic based on request
+
+    {
+      code: airline.code,
+      name: airline.name,
+      logo: {
+        svg: airline.logo_svg ? "#{base_url}/airline-logos/#{airline.logo_svg}" : nil,
+        png: airline.logo_png ? "#{base_url}/airline-logos/#{airline.logo_png}" : nil
+      }
     }
   end
 

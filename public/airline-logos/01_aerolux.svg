@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <path d="M22 78 Q56 78 84 30" fill="none" stroke="#C9A227" stroke-width="9" stroke-linecap="round"/>
+    <path d="M30 78 Q60 78 84 42" fill="none" stroke="#1F3A5F" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+    <circle cx="84" cy="30" r="6" fill="#C9A227"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans" font-weight="bold" font-size="33"
+        fill="#1F3A5F" >Aerolux</text>
+</svg>

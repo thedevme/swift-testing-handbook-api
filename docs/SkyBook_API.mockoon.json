@@ -1,0 +1,715 @@
+{
+  "uuid": "61ac7677-ee1b-4428-a52c-38129dd1a8b3",
+  "lastMigration": 33,
+  "name": "SkyBook Flight API",
+  "endpointPrefix": "api/v1",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [
+    {
+      "uuid": "b5ab28db-88d2-459f-88af-216d5019f1cd",
+      "name": "Flights",
+      "children": []
+    },
+    {
+      "uuid": "3c228389-1c98-4a99-92e6-db0a67e77476",
+      "name": "Seats",
+      "children": []
+    },
+    {
+      "uuid": "f6f79a0a-7887-41fd-a208-7d3c6a5b4d85",
+      "name": "Bookings",
+      "children": []
+    },
+    {
+      "uuid": "b9b3ea79-21b6-4b4f-b940-16e9bbf3d564",
+      "name": "Live Tracking",
+      "children": []
+    },
+    {
+      "uuid": "b00ede33-dbeb-4734-8603-1cc90a651516",
+      "name": "Authentication",
+      "children": []
+    }
+  ],
+  "routes": [
+    {
+      "uuid": "ad053230-e614-44fc-aaf4-442fe141db8e",
+      "type": "http",
+      "documentation": "List all flights with optional filtering and sorting",
+      "method": "get",
+      "endpoint": "flights",
+      "responses": [
+        {
+          "uuid": "6cdbd088-1001-4a34-b303-890512f795f5",
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": {\n        \"code\": \"TPA\",\n        \"name\": \"Tampa International Airport\",\n        \"city\": \"Tampa\"\n      },\n      \"destination\": {\n        \"code\": \"JFK\",\n        \"name\": \"John F. Kennedy International Airport\",\n        \"city\": \"New York\"\n      },\n      \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n      \"arrival_at\": \"{{faker 'date.soon' days=7}}\",\n      \"duration_minutes\": {{faker 'number.int' min=120 max=480}},\n      \"status\": \"scheduled\",\n      \"delay_minutes\": null,\n      \"diverted_to\": null,\n      \"is_international\": false,\n      \"aircraft\": {\n        \"model\": \"Boeing 737-800\",\n        \"aisle_type\": \"single\",\n        \"is_double_deck\": false\n      },\n      \"pricing\": {\n        \"economy\": {{faker 'number.int' min=150 max=350}},\n        \"comfort_plus\": {{faker 'number.int' min=250 max=450}},\n        \"business\": {{faker 'number.int' min=450 max=750}},\n        \"first\": null\n      },\n      \"seats_available\": {\n        \"economy\": {{faker 'number.int' min=50 max=120}},\n        \"comfort_plus\": {{faker 'number.int' min=10 max=30}},\n        \"business\": {{faker 'number.int' min=5 max=20}},\n        \"first\": 0,\n        \"total\": {{faker 'number.int' min=80 max=170}}\n      }\n    },\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": {\n        \"code\": \"LAX\",\n        \"name\": \"Los Angeles International Airport\",\n        \"city\": \"Los Angeles\"\n      },\n      \"destination\": {\n        \"code\": \"ORD\",\n        \"name\": \"O'Hare International Airport\",\n        \"city\": \"Chicago\"\n      },\n      \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n      \"arrival_at\": \"{{faker 'date.soon' days=7}}\",\n      \"duration_minutes\": {{faker 'number.int' min=180 max=300}},\n      \"status\": \"on_time\",\n      \"delay_minutes\": null,\n      \"diverted_to\": null,\n      \"is_international\": false,\n      \"aircraft\": {\n        \"model\": \"Airbus A320\",\n        \"aisle_type\": \"single\",\n        \"is_double_deck\": false\n      },\n      \"pricing\": {\n        \"economy\": {{faker 'number.int' min=180 max=400}},\n        \"comfort_plus\": {{faker 'number.int' min=280 max=500}},\n        \"business\": {{faker 'number.int' min=500 max=800}},\n        \"first\": null\n      },\n      \"seats_available\": {\n        \"economy\": {{faker 'number.int' min=40 max=100}},\n        \"comfort_plus\": {{faker 'number.int' min=8 max=25}},\n        \"business\": {{faker 'number.int' min=4 max=16}},\n        \"first\": 0,\n        \"total\": {{faker 'number.int' min=60 max=140}}\n      }\n    },\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": {\n        \"code\": \"JFK\",\n        \"name\": \"John F. Kennedy International Airport\",\n        \"city\": \"New York\"\n      },\n      \"destination\": {\n        \"code\": \"LHR\",\n        \"name\": \"London Heathrow Airport\",\n        \"city\": \"London\"\n      },\n      \"departure_at\": \"{{faker 'date.soon' days=14}}\",\n      \"arrival_at\": \"{{faker 'date.soon' days=14}}\",\n      \"duration_minutes\": {{faker 'number.int' min=400 max=480}},\n      \"status\": \"scheduled\",\n      \"delay_minutes\": null,\n      \"diverted_to\": null,\n      \"is_international\": true,\n      \"aircraft\": {\n        \"model\": \"Boeing 777-300ER\",\n        \"aisle_type\": \"twin\",\n        \"is_double_deck\": false\n      },\n      \"pricing\": {\n        \"economy\": {{faker 'number.int' min=500 max=800}},\n        \"comfort_plus\": {{faker 'number.int' min=800 max=1200}},\n        \"business\": {{faker 'number.int' min=2500 max=4000}},\n        \"first\": {{faker 'number.int' min=6000 max=10000}}\n      },\n      \"seats_available\": {\n        \"economy\": {{faker 'number.int' min=150 max=250}},\n        \"comfort_plus\": {{faker 'number.int' min=30 max=50}},\n        \"business\": {{faker 'number.int' min=20 max=40}},\n        \"first\": {{faker 'number.int' min=4 max=12}},\n        \"total\": {{faker 'number.int' min=200 max=350}}\n      }\n    }\n  ],\n  \"meta\": {\n    \"total\": 47,\n    \"page\": 1,\n    \"per_page\": 20,\n    \"total_pages\": 3\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "d5954ba3-b51c-4ee9-a630-0b5d6d4186f9",
+          "body": "{\n  \"error\": \"Unauthorized\",\n  \"message\": \"Invalid or missing API key\",\n  \"code\": \"UNAUTHORIZED\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Unauthorized",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "^$",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a0077846-4bd7-44e9-8ce4-ac9808c22b5e",
+      "type": "http",
+      "documentation": "Get a specific flight by ID",
+      "method": "get",
+      "endpoint": "flights/:id",
+      "responses": [
+        {
+          "uuid": "0c00b95b-1a73-4e52-9a79-09d7ab4b2f95",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{urlParam 'id'}}\",\n    \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n    \"origin\": {\n      \"code\": \"TPA\",\n      \"name\": \"Tampa International Airport\",\n      \"city\": \"Tampa\"\n    },\n    \"destination\": {\n      \"code\": \"JFK\",\n      \"name\": \"John F. Kennedy International Airport\",\n      \"city\": \"New York\"\n    },\n    \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n    \"arrival_at\": \"{{faker 'date.soon' days=7}}\",\n    \"duration_minutes\": {{faker 'number.int' min=150 max=200}},\n    \"status\": \"scheduled\",\n    \"delay_minutes\": null,\n    \"diverted_to\": null,\n    \"is_international\": false,\n    \"aircraft\": {\n      \"model\": \"Boeing 737-800\",\n      \"aisle_type\": \"single\",\n      \"is_double_deck\": false\n    },\n    \"pricing\": {\n      \"economy\": {{faker 'number.int' min=150 max=350}},\n      \"comfort_plus\": {{faker 'number.int' min=250 max=450}},\n      \"business\": {{faker 'number.int' min=450 max=750}},\n      \"first\": null\n    },\n    \"seats_available\": {\n      \"economy\": {{faker 'number.int' min=50 max=120}},\n      \"comfort_plus\": {{faker 'number.int' min=10 max=30}},\n      \"business\": {{faker 'number.int' min=5 max=20}},\n      \"first\": 0,\n      \"total\": {{faker 'number.int' min=80 max=170}}\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0a7f2d5e-f638-4628-ba0c-6b9f41ba26c3",
+          "body": "{\n  \"error\": \"Not Found\",\n  \"message\": \"Flight not found\",\n  \"code\": \"NOT_FOUND\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Not Found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "not-found",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "67860f50-9860-4087-beb2-d6ab791515e4",
+      "type": "http",
+      "documentation": "List all seats for a flight with seat map",
+      "method": "get",
+      "endpoint": "flights/:flight_id/seats",
+      "responses": [
+        {
+          "uuid": "da26040c-c8ae-413c-8a31-50a05a11e795",
+          "body": "{\n  \"data\": {\n    \"flight_id\": \"{{urlParam 'flight_id'}}\",\n    \"aircraft\": {\n      \"model\": \"Boeing 737-800\",\n      \"aisle_type\": \"single\",\n      \"is_double_deck\": false\n    },\n    \"seat_map\": {\n      \"economy\": [\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"15A\",\n          \"row\": 15,\n          \"column\": \"A\",\n          \"deck\": \"main\",\n          \"seat_class\": \"economy\",\n          \"seat_type\": \"window\",\n          \"features\": [\"extra_legroom\"],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=150 max=250}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"15B\",\n          \"row\": 15,\n          \"column\": \"B\",\n          \"deck\": \"main\",\n          \"seat_class\": \"economy\",\n          \"seat_type\": \"middle\",\n          \"features\": [],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=120 max=180}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"15C\",\n          \"row\": 15,\n          \"column\": \"C\",\n          \"deck\": \"main\",\n          \"seat_class\": \"economy\",\n          \"seat_type\": \"aisle\",\n          \"features\": [],\n          \"is_available\": false,\n          \"price\": {{faker 'number.int' min=140 max=200}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"16A\",\n          \"row\": 16,\n          \"column\": \"A\",\n          \"deck\": \"main\",\n          \"seat_class\": \"economy\",\n          \"seat_type\": \"window\",\n          \"features\": [],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=150 max=220}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"16B\",\n          \"row\": 16,\n          \"column\": \"B\",\n          \"deck\": \"main\",\n          \"seat_class\": \"economy\",\n          \"seat_type\": \"middle\",\n          \"features\": [],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=110 max=160}}\n        }\n      ],\n      \"comfort_plus\": [\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"8A\",\n          \"row\": 8,\n          \"column\": \"A\",\n          \"deck\": \"main\",\n          \"seat_class\": \"comfort_plus\",\n          \"seat_type\": \"window\",\n          \"features\": [\"extra_legroom\", \"priority_boarding\"],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=280 max=380}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"8B\",\n          \"row\": 8,\n          \"column\": \"B\",\n          \"deck\": \"main\",\n          \"seat_class\": \"comfort_plus\",\n          \"seat_type\": \"middle\",\n          \"features\": [\"extra_legroom\", \"priority_boarding\"],\n          \"is_available\": false,\n          \"price\": {{faker 'number.int' min=250 max=340}}\n        }\n      ],\n      \"business\": [\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"2A\",\n          \"row\": 2,\n          \"column\": \"A\",\n          \"deck\": \"main\",\n          \"seat_class\": \"business\",\n          \"seat_type\": \"window\",\n          \"features\": [\"lie_flat\", \"extra_legroom\", \"priority_boarding\", \"lounge_access\"],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=550 max=800}}\n        },\n        {\n          \"id\": \"{{faker 'string.uuid'}}\",\n          \"seat_number\": \"2C\",\n          \"row\": 2,\n          \"column\": \"C\",\n          \"deck\": \"main\",\n          \"seat_class\": \"business\",\n          \"seat_type\": \"aisle\",\n          \"features\": [\"lie_flat\", \"extra_legroom\", \"priority_boarding\", \"lounge_access\"],\n          \"is_available\": true,\n          \"price\": {{faker 'number.int' min=550 max=800}}\n        }\n      ]\n    },\n    \"summary\": {\n      \"total_seats\": 162,\n      \"available\": 98,\n      \"by_class\": {\n        \"economy\": { \"total\": 126, \"available\": 72 },\n        \"comfort_plus\": { \"total\": 24, \"available\": 16 },\n        \"business\": { \"total\": 12, \"available\": 10 }\n      }\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7ebb322c-8e86-4f5d-8b09-11bba8e3d83e",
+      "type": "http",
+      "documentation": "Get a specific seat",
+      "method": "get",
+      "endpoint": "flights/:flight_id/seats/:id",
+      "responses": [
+        {
+          "uuid": "dddf3c95-aa45-44b7-9178-ee28db2192d9",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{urlParam 'id'}}\",\n    \"seat_number\": \"15A\",\n    \"row\": 15,\n    \"column\": \"A\",\n    \"deck\": \"main\",\n    \"seat_class\": \"economy\",\n    \"seat_type\": \"window\",\n    \"features\": [\"extra_legroom\"],\n    \"is_available\": true,\n    \"price\": {{faker 'number.int' min=150 max=250}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7d8bdf15-8187-4eee-8267-be760787ae73",
+      "type": "http",
+      "documentation": "Create a new booking",
+      "method": "post",
+      "endpoint": "bookings",
+      "responses": [
+        {
+          "uuid": "baf029e6-0c67-414f-b98d-1a210c1d8cc2",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{faker 'string.uuid'}}\",\n    \"reference\": \"SK{{faker 'string.alphanumeric' length=4 casing='upper'}}\",\n    \"status\": \"confirmed\",\n    \"flight\": {\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n      \"status\": \"scheduled\",\n      \"delay_minutes\": null,\n      \"origin\": \"TPA\",\n      \"destination\": \"JFK\"\n    },\n    \"seat\": {\n      \"seat_number\": \"15A\",\n      \"seat_class\": \"economy\",\n      \"seat_type\": \"window\",\n      \"price\": {{faker 'number.int' min=150 max=350}}\n    },\n    \"passenger_name\": \"{{body 'passenger_name'}}\",\n    \"created_at\": \"{{now}}\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "Created",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c1b7ba57-f8de-4048-9bd0-dc3e337ec2b1",
+          "body": "{\n  \"error\": \"Unprocessable Entity\",\n  \"message\": \"Seat is not available\",\n  \"code\": \"SEAT_UNAVAILABLE\"\n}",
+          "latency": 0,
+          "statusCode": 422,
+          "label": "Seat Unavailable",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8d29a1a6-60d6-4191-9e57-ac7dedac10f9",
+      "type": "http",
+      "documentation": "List all bookings for the authenticated user",
+      "method": "get",
+      "endpoint": "bookings",
+      "responses": [
+        {
+          "uuid": "616ec61d-5cd7-4345-a285-4d7d08bf9ca8",
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"reference\": \"SK{{faker 'string.alphanumeric' length=4 casing='upper'}}\",\n      \"status\": \"confirmed\",\n      \"flight\": {\n        \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n        \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n        \"status\": \"scheduled\",\n        \"delay_minutes\": null,\n        \"origin\": \"TPA\",\n        \"destination\": \"JFK\"\n      },\n      \"seat\": {\n        \"seat_number\": \"15A\",\n        \"seat_class\": \"economy\",\n        \"seat_type\": \"window\",\n        \"price\": {{faker 'number.int' min=150 max=350}}\n      },\n      \"passenger_name\": \"John Doe\",\n      \"created_at\": \"{{faker 'date.recent' days=3}}\"\n    },\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"reference\": \"SK{{faker 'string.alphanumeric' length=4 casing='upper'}}\",\n      \"status\": \"confirmed\",\n      \"flight\": {\n        \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n        \"departure_at\": \"{{faker 'date.soon' days=14}}\",\n        \"status\": \"on_time\",\n        \"delay_minutes\": null,\n        \"origin\": \"JFK\",\n        \"destination\": \"LHR\"\n      },\n      \"seat\": {\n        \"seat_number\": \"2A\",\n        \"seat_class\": \"business\",\n        \"seat_type\": \"window\",\n        \"price\": {{faker 'number.int' min=2500 max=4000}}\n      },\n      \"passenger_name\": \"John Doe\",\n      \"created_at\": \"{{faker 'date.recent' days=5}}\"\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "0d61c670-ba19-4354-a52d-cd3e91ab9b88",
+      "type": "http",
+      "documentation": "Get a specific booking",
+      "method": "get",
+      "endpoint": "bookings/:id",
+      "responses": [
+        {
+          "uuid": "8f189c24-35c4-4fe3-ab5a-99c9e986fcdf",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{urlParam 'id'}}\",\n    \"reference\": \"SK{{faker 'string.alphanumeric' length=4 casing='upper'}}\",\n    \"status\": \"confirmed\",\n    \"flight\": {\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n      \"status\": \"scheduled\",\n      \"delay_minutes\": null,\n      \"origin\": \"TPA\",\n      \"destination\": \"JFK\"\n    },\n    \"seat\": {\n      \"seat_number\": \"15A\",\n      \"seat_class\": \"economy\",\n      \"seat_type\": \"window\",\n      \"price\": {{faker 'number.int' min=150 max=350}}\n    },\n    \"passenger_name\": \"John Doe\",\n    \"created_at\": \"{{faker 'date.recent' days=3}}\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "8ca03919-b29c-41dd-af04-0cb8fdaa287e",
+          "body": "{\n  \"error\": \"Not Found\",\n  \"message\": \"Booking not found\",\n  \"code\": \"NOT_FOUND\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Not Found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "not-found",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "83fbb039-193f-466d-a29c-f87b4fb6821c",
+      "type": "http",
+      "documentation": "Cancel a booking",
+      "method": "delete",
+      "endpoint": "bookings/:id",
+      "responses": [
+        {
+          "uuid": "81f73315-b5af-42b2-bd6b-8ed3f228ffe5",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{urlParam 'id'}}\",\n    \"reference\": \"SK{{faker 'string.alphanumeric' length=4 casing='upper'}}\",\n    \"status\": \"cancelled\",\n    \"flight\": {\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"departure_at\": \"{{faker 'date.soon' days=7}}\",\n      \"status\": \"scheduled\",\n      \"delay_minutes\": null,\n      \"origin\": \"TPA\",\n      \"destination\": \"JFK\"\n    },\n    \"seat\": {\n      \"seat_number\": \"15A\",\n      \"seat_class\": \"economy\",\n      \"seat_type\": \"window\",\n      \"price\": {{faker 'number.int' min=150 max=350}}\n    },\n    \"passenger_name\": \"John Doe\",\n    \"created_at\": \"{{faker 'date.recent' days=3}}\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "66d390f1-5593-438d-ae47-4fb32ad969e8",
+      "type": "http",
+      "documentation": "List all flights currently in the air",
+      "method": "get",
+      "endpoint": "live/flights",
+      "responses": [
+        {
+          "uuid": "015d3a4e-2ad1-41e7-a763-4c737e100c9e",
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": \"TPA\",\n      \"destination\": \"JFK\",\n      \"status\": \"departed\",\n      \"departed_at\": \"{{faker 'date.recent' days=0}}\",\n      \"arrives_at\": \"{{faker 'date.soon' days=0}}\",\n      \"progress_pct\": {{faker 'number.int' min=20 max=80}},\n      \"position\": {\n        \"lat\": {{faker 'number.float' min=28 max=40 fractionDigits=4}},\n        \"lng\": {{faker 'number.float' min=-82 max=-74 fractionDigits=4}}\n      },\n      \"altitude_ft\": {{faker 'number.int' min=32000 max=41000}},\n      \"speed_mph\": {{faker 'number.int' min=480 max=580}}\n    },\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": \"LAX\",\n      \"destination\": \"ORD\",\n      \"status\": \"departed\",\n      \"departed_at\": \"{{faker 'date.recent' days=0}}\",\n      \"arrives_at\": \"{{faker 'date.soon' days=0}}\",\n      \"progress_pct\": {{faker 'number.int' min=10 max=90}},\n      \"position\": {\n        \"lat\": {{faker 'number.float' min=34 max=41 fractionDigits=4}},\n        \"lng\": {{faker 'number.float' min=-118 max=-88 fractionDigits=4}}\n      },\n      \"altitude_ft\": {{faker 'number.int' min=35000 max=42000}},\n      \"speed_mph\": {{faker 'number.int' min=500 max=600}}\n    },\n    {\n      \"id\": \"{{faker 'string.uuid'}}\",\n      \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n      \"origin\": \"JFK\",\n      \"destination\": \"LHR\",\n      \"status\": \"departed\",\n      \"departed_at\": \"{{faker 'date.recent' days=0}}\",\n      \"arrives_at\": \"{{faker 'date.soon' days=0}}\",\n      \"progress_pct\": {{faker 'number.int' min=30 max=70}},\n      \"position\": {\n        \"lat\": {{faker 'number.float' min=45 max=55 fractionDigits=4}},\n        \"lng\": {{faker 'number.float' min=-40 max=-10 fractionDigits=4}}\n      },\n      \"altitude_ft\": {{faker 'number.int' min=38000 max=43000}},\n      \"speed_mph\": {{faker 'number.int' min=520 max=620}}\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "97ef2bb5-f348-426a-bf87-407c02c280ad",
+      "type": "http",
+      "documentation": "Get live tracking data for a specific flight",
+      "method": "get",
+      "endpoint": "live/flights/:id",
+      "responses": [
+        {
+          "uuid": "fa68043f-b534-45f7-87d6-905edde12b7b",
+          "body": "{\n  \"data\": {\n    \"id\": \"{{urlParam 'id'}}\",\n    \"flight_number\": \"SK{{faker 'number.int' min=1000 max=9999}}\",\n    \"origin\": \"TPA\",\n    \"destination\": \"JFK\",\n    \"status\": \"departed\",\n    \"departed_at\": \"{{faker 'date.recent' days=0}}\",\n    \"arrives_at\": \"{{faker 'date.soon' days=0}}\",\n    \"progress_pct\": {{faker 'number.int' min=20 max=80}},\n    \"position\": {\n      \"lat\": {{faker 'number.float' min=28 max=40 fractionDigits=4}},\n      \"lng\": {{faker 'number.float' min=-82 max=-74 fractionDigits=4}}\n    },\n    \"altitude_ft\": {{faker 'number.int' min=32000 max=41000}},\n    \"speed_mph\": {{faker 'number.int' min=480 max=580}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "19161433-56cb-4bb1-898e-9aced77d8c7e",
+          "body": "{\n  \"error\": \"Not Found\",\n  \"message\": \"Flight not found or not currently in air\",\n  \"code\": \"NOT_FOUND\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Not Found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "not-found",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ac53c2d5-b950-4377-a4a0-2ddd1c7d335f",
+      "type": "http",
+      "documentation": "Get live flight statistics",
+      "method": "get",
+      "endpoint": "live/stats",
+      "responses": [
+        {
+          "uuid": "b5f8909f-23a4-4541-85c9-fc75af5616d1",
+          "body": "{\n  \"data\": {\n    \"flights_in_air\": {{faker 'number.int' min=8 max=25}},\n    \"total_passengers\": {{faker 'number.int' min=1200 max=4500}},\n    \"on_time_percentage\": {{faker 'number.float' min=85 max=98 fractionDigits=1}},\n    \"busiest_route\": {\n      \"origin\": \"JFK\",\n      \"destination\": \"LAX\",\n      \"flights_today\": {{faker 'number.int' min=8 max=15}}\n    },\n    \"status_breakdown\": {\n      \"on_time\": {{faker 'number.int' min=15 max=30}},\n      \"delayed\": {{faker 'number.int' min=2 max=8}},\n      \"departed\": {{faker 'number.int' min=8 max=20}},\n      \"arrived\": {{faker 'number.int' min=10 max=25}},\n      \"cancelled\": {{faker 'number.int' min=0 max=3}}\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8bd96da8-6abd-42da-96b2-f3bd9e7650b3",
+      "type": "http",
+      "documentation": "Recover API key via email",
+      "method": "post",
+      "endpoint": "keys/recover",
+      "responses": [
+        {
+          "uuid": "fcd870de-45b4-4b2c-ac4a-f8a07e8f71d9",
+          "body": "{\n  \"message\": \"If an account exists with that email, you will receive your API key shortly.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Success",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "folder",
+      "uuid": "b5ab28db-88d2-459f-88af-216d5019f1cd"
+    },
+    {
+      "type": "folder",
+      "uuid": "3c228389-1c98-4a99-92e6-db0a67e77476"
+    },
+    {
+      "type": "folder",
+      "uuid": "f6f79a0a-7887-41fd-a208-7d3c6a5b4d85"
+    },
+    {
+      "type": "folder",
+      "uuid": "b9b3ea79-21b6-4b4f-b940-16e9bbf3d564"
+    },
+    {
+      "type": "folder",
+      "uuid": "b00ede33-dbeb-4734-8603-1cc90a651516"
+    },
+    {
+      "type": "route",
+      "uuid": "ad053230-e614-44fc-aaf4-442fe141db8e"
+    },
+    {
+      "type": "route",
+      "uuid": "a0077846-4bd7-44e9-8ce4-ac9808c22b5e"
+    },
+    {
+      "type": "route",
+      "uuid": "67860f50-9860-4087-beb2-d6ab791515e4"
+    },
+    {
+      "type": "route",
+      "uuid": "7ebb322c-8e86-4f5d-8b09-11bba8e3d83e"
+    },
+    {
+      "type": "route",
+      "uuid": "7d8bdf15-8187-4eee-8267-be760787ae73"
+    },
+    {
+      "type": "route",
+      "uuid": "8d29a1a6-60d6-4191-9e57-ac7dedac10f9"
+    },
+    {
+      "type": "route",
+      "uuid": "0d61c670-ba19-4354-a52d-cd3e91ab9b88"
+    },
+    {
+      "type": "route",
+      "uuid": "83fbb039-193f-466d-a29c-f87b4fb6821c"
+    },
+    {
+      "type": "route",
+      "uuid": "66d390f1-5593-438d-ae47-4fb32ad969e8"
+    },
+    {
+      "type": "route",
+      "uuid": "97ef2bb5-f348-426a-bf87-407c02c280ad"
+    },
+    {
+      "type": "route",
+      "uuid": "ac53c2d5-b950-4377-a4a0-2ddd1c7d335f"
+    },
+    {
+      "type": "route",
+      "uuid": "8bd96da8-6abd-42da-96b2-f3bd9e7650b3"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [],
+  "proxyResHeaders": [],
+  "data": [],
+  "callbacks": []
+}

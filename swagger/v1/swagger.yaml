@@ -1,0 +1,1040 @@
+---
+openapi: 3.0.1
+info:
+  title: SkyBook Flight API
+  version: v1
+  description: |
+    The SkyBook API provides access to flight data, seat maps, and booking functionality
+    for the Swift Testing Handbook companion app.
+
+    ## Authentication
+
+    All endpoints require a valid API key passed in the Authorization header:
+
+    ```
+    Authorization: Bearer sk_your_api_key_here
+    ```
+
+    API keys are issued upon purchase of the Swift Testing Handbook.
+
+    ## Rate Limiting
+
+    The API is rate-limited to 100 requests per minute per API key.
+
+    ## Seat Availability
+
+    Seat availability is randomized every Sunday at midnight UTC for testing purposes.
+paths:
+  "/api/v1/bookings":
+    get:
+      summary: List your bookings
+      tags:
+      - Bookings
+      description: Returns all bookings associated with your API key.
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: bookings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Booking"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    post:
+      summary: Create a booking
+      tags:
+      - Bookings
+      description: |
+        Creates a new booking for a flight seat.
+
+        ## Validation Rules
+        - The flight must not be cancelled or diverted
+        - The seat must be available
+        - You cannot have multiple confirmed bookings on the same flight
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: booking created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/Booking"
+        '409':
+          description: seat taken
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+                  code:
+                    type: string
+                  details:
+                    type: object
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                flight_id:
+                  type: string
+                  format: uuid
+                  description: ID of the flight to book
+                seat_id:
+                  type: string
+                  format: uuid
+                  description: ID of the seat to reserve
+                passenger_name:
+                  type: string
+                  description: Full name of the passenger
+                  maxLength: 100
+              required:
+              - flight_id
+              - seat_id
+              - passenger_name
+  "/api/v1/bookings/{id}":
+    get:
+      summary: Get a specific booking
+      tags:
+      - Bookings
+      description: Returns details of a specific booking. You can only view your own
+        bookings.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        description: Booking ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: booking found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/Booking"
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: booking not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Cancel a booking
+      tags:
+      - Bookings
+      description: |
+        Cancels a booking and releases the seat.
+
+        You can only cancel your own bookings.
+        Already cancelled bookings cannot be cancelled again.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        description: Booking ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: booking cancelled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      reference:
+                        type: string
+                      status:
+                        type: string
+                        enum:
+                        - cancelled
+                      seat_released:
+                        type: boolean
+        '422':
+          description: already cancelled
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: booking not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/flights":
+    get:
+      summary: List all flights
+      tags:
+      - Flights
+      description: Returns a paginated list of flights with optional filtering and
+        sorting.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: origin
+        in: query
+        required: false
+        description: Filter by origin airport code
+        schema:
+          type: string
+          enum:
+          - TPA
+          - JFK
+          - LAX
+          - ORD
+          - BOS
+          - MIA
+          - SEA
+          - DEN
+          - ATL
+          - DFW
+          - LHR
+          - CDG
+          - NRT
+          - SYD
+          - DXB
+          - YYZ
+          - MEX
+          - AMS
+          - SIN
+          - GRU
+      - name: destination
+        in: query
+        required: false
+        description: Filter by destination airport code
+        schema:
+          type: string
+          enum:
+          - TPA
+          - JFK
+          - LAX
+          - ORD
+          - BOS
+          - MIA
+          - SEA
+          - DEN
+          - ATL
+          - DFW
+          - LHR
+          - CDG
+          - NRT
+          - SYD
+          - DXB
+          - YYZ
+          - MEX
+          - AMS
+          - SIN
+          - GRU
+      - name: status
+        in: query
+        required: false
+        description: Filter by flight status
+        schema:
+          type: string
+          enum:
+          - scheduled
+          - on_time
+          - delayed
+          - boarding
+          - departed
+          - arrived
+          - cancelled
+          - diverted
+      - name: date
+        in: query
+        required: false
+        description: Filter by departure date (YYYY-MM-DD)
+        schema:
+          type: string
+          format: date
+      - name: sort
+        in: query
+        required: false
+        description: Sort order
+        schema:
+          type: string
+          enum:
+          - price_asc
+          - price_desc
+          - duration
+          - departure_time
+      - name: page
+        in: query
+        required: false
+        description: 'Page number (default: 1)'
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        description: 'Results per page (default: 20, max: 100)'
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: flights found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Flight"
+                  meta:
+                    "$ref": "#/components/schemas/PaginationMeta"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/flights/{id}":
+    get:
+      summary: Get a specific flight
+      tags:
+      - Flights
+      description: Returns detailed information about a specific flight.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        description: Flight ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: flight found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/Flight"
+        '404':
+          description: flight not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/keys/recover":
+    post:
+      summary: Recover API key
+      tags:
+      - Authentication
+      description: |
+        Request recovery of your API key by email.
+
+        If the email is on file, an email will be sent with your API key.
+        For security, the response is always the same regardless of whether
+        the email exists in our system (no user enumeration).
+
+        **Note:** This endpoint does not require authentication.
+      security: []
+      parameters: []
+      responses:
+        '200':
+          description: response is identical for non-existing email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: If this email is on file, we've sent the API key to it.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email address associated with your API key
+              required:
+              - email
+  "/api/v1/live/flights":
+    get:
+      summary: List flights currently in air
+      tags:
+      - Live Tracking
+      description: |
+        Returns all flights that are currently in the air (between scheduled
+        departure and arrival times, not cancelled or diverted).
+
+        Each flight includes its current position, calculated by linear
+        interpolation between origin and destination coordinates.
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: live flights returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/LiveFlight"
+                  meta:
+                    type: object
+                    properties:
+                      flights_in_air:
+                        type: integer
+                      generated_at:
+                        type: string
+                        format: date-time
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/live/flights/{id}":
+    get:
+      summary: Get live flight details
+      tags:
+      - Live Tracking
+      description: |
+        Returns detailed tracking information for a specific flight that
+        is currently in the air.
+
+        Includes:
+        - Current position (lat/lng)
+        - Progress percentage
+        - Time remaining
+        - Altitude and speed
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        description: Flight ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: live flight data returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      flight_number:
+                        type: string
+                      origin:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          city:
+                            type: string
+                      destination:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          city:
+                            type: string
+                      status:
+                        type: string
+                      departed_at:
+                        type: string
+                        format: date-time
+                      arrives_at:
+                        type: string
+                        format: date-time
+                      progress_pct:
+                        type: integer
+                      position:
+                        type: object
+                        properties:
+                          lat:
+                            type: number
+                          lng:
+                            type: number
+                      time_remaining_min:
+                        type: integer
+                      aircraft:
+                        type: string
+                      altitude_ft:
+                        type: integer
+                      speed_mph:
+                        type: integer
+                      delay_minutes:
+                        type: integer
+                        nullable: true
+        '422':
+          description: flight not in air
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: flight not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/live/stats":
+    get:
+      summary: Get airline statistics
+      tags:
+      - Live Tracking
+      description: |
+        Returns aggregated statistics about current flight operations.
+
+        Statistics include:
+        - Number of flights currently in air
+        - On-time performance percentage
+        - Delayed and cancelled flight counts
+        - Busiest route
+
+        Statistics reset daily at midnight UTC.
+      security:
+      - bearer_auth: []
+      responses:
+        '200':
+          description: statistics returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      flights_in_air:
+                        type: integer
+                      on_time_pct:
+                        type: integer
+                        description: Percentage of flights on time
+                      delayed_count:
+                        type: integer
+                      cancelled_today:
+                        type: integer
+                      busiest_route:
+                        type: string
+                        nullable: true
+                        example: TPA → JFK
+                      reset_at:
+                        type: string
+                        format: date-time
+                        description: When stats reset (midnight UTC)
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/flights/{flight_id}/seats":
+    get:
+      summary: List seats for a flight
+      tags:
+      - Seats
+      description: |
+        Returns the seat map for a specific flight, organized by seat class.
+        For double-deck aircraft (A380), seats are also grouped by deck (upper/main).
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: flight_id
+        in: path
+        format: uuid
+        required: true
+        description: Flight ID
+        schema:
+          type: string
+      - name: class
+        in: query
+        required: false
+        description: "Filter by seat class:\n * `economy` \n * `comfort_plus` \n *
+          `business` \n * `first` \n "
+        enum:
+        - economy
+        - comfort_plus
+        - business
+        - first
+        schema:
+          type: string
+      - name: available
+        in: query
+        required: false
+        description: Filter by availability (true/false)
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        description: Filter by seat type
+        enum:
+        - window
+        - middle
+        - aisle
+        schema:
+          type: string
+      - name: deck
+        in: query
+        required: false
+        description: Filter by deck (for A380)
+        enum:
+        - main
+        - upper
+        schema:
+          type: string
+      responses:
+        '200':
+          description: seat map returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      flight_id:
+                        type: string
+                        format: uuid
+                      flight_number:
+                        type: string
+                      aircraft:
+                        type: string
+                      aisle_type:
+                        type: string
+                      is_double_deck:
+                        type: boolean
+                      reset_note:
+                        type: string
+                      seat_map:
+                        type: object
+                      summary:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                          available:
+                            type: integer
+                          taken:
+                            type: integer
+                          by_class:
+                            type: object
+        '404':
+          description: flight not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/flights/{flight_id}/seats/{id}":
+    get:
+      summary: Get a specific seat
+      tags:
+      - Seats
+      description: Returns detailed information about a specific seat.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: flight_id
+        in: path
+        format: uuid
+        required: true
+        description: Flight ID
+        schema:
+          type: string
+      - name: id
+        in: path
+        format: uuid
+        required: true
+        description: Seat ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: seat found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    "$ref": "#/components/schemas/Seat"
+        '404':
+          description: seat not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+servers:
+- url: http://localhost:3000
+  description: Development server
+- url: https://api.swifttestinghandbook.com
+  description: Production server
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      description: API key with sk_ prefix
+  schemas:
+    Airport:
+      type: object
+      properties:
+        code:
+          type: string
+          example: JFK
+        name:
+          type: string
+          example: John F. Kennedy International Airport
+        city:
+          type: string
+          example: New York
+    Aircraft:
+      type: object
+      properties:
+        model:
+          type: string
+          example: Boeing 737-800
+        aisle_type:
+          type: string
+          enum:
+          - single
+          - twin
+        is_double_deck:
+          type: boolean
+    Pricing:
+      type: object
+      properties:
+        economy:
+          type: integer
+          example: 150
+        comfort_plus:
+          type: integer
+          example: 250
+        business:
+          type: integer
+          example: 450
+          nullable: true
+        first:
+          type: integer
+          example: 750
+          nullable: true
+    SeatsAvailable:
+      type: object
+      properties:
+        economy:
+          type: integer
+        comfort_plus:
+          type: integer
+        business:
+          type: integer
+        first:
+          type: integer
+        total:
+          type: integer
+    Flight:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        flight_number:
+          type: string
+          example: SK1234
+        origin:
+          "$ref": "#/components/schemas/Airport"
+        destination:
+          "$ref": "#/components/schemas/Airport"
+        departure_at:
+          type: string
+          format: date-time
+        arrival_at:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+        status:
+          type: string
+          enum:
+          - scheduled
+          - on_time
+          - delayed
+          - boarding
+          - departed
+          - arrived
+          - cancelled
+          - diverted
+        delay_minutes:
+          type: integer
+          nullable: true
+        diverted_to:
+          type: string
+          nullable: true
+        is_international:
+          type: boolean
+        aircraft:
+          "$ref": "#/components/schemas/Aircraft"
+        pricing:
+          "$ref": "#/components/schemas/Pricing"
+        seats_available:
+          "$ref": "#/components/schemas/SeatsAvailable"
+    Seat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        seat_number:
+          type: string
+          example: 15A
+        row:
+          type: integer
+        column:
+          type: string
+          example: A
+        deck:
+          type: string
+          enum:
+          - main
+          - upper
+        seat_class:
+          type: string
+          enum:
+          - economy
+          - comfort_plus
+          - business
+          - first
+        seat_type:
+          type: string
+          enum:
+          - window
+          - middle
+          - aisle
+        features:
+          type: array
+          items:
+            type: string
+        is_available:
+          type: boolean
+        price:
+          type: integer
+          description: Price in dollars
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        reference:
+          type: string
+          example: SK1A2B
+        status:
+          type: string
+          enum:
+          - confirmed
+          - cancelled
+        flight:
+          type: object
+          properties:
+            flight_number:
+              type: string
+            departure_at:
+              type: string
+              format: date-time
+            status:
+              type: string
+            delay_minutes:
+              type: integer
+              nullable: true
+            origin:
+              type: string
+            destination:
+              type: string
+        seat:
+          type: object
+          properties:
+            seat_number:
+              type: string
+            seat_class:
+              type: string
+            seat_type:
+              type: string
+            price:
+              type: integer
+        passenger_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    LiveFlight:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        flight_number:
+          type: string
+        origin:
+          type: string
+        destination:
+          type: string
+        status:
+          type: string
+        departed_at:
+          type: string
+          format: date-time
+        arrives_at:
+          type: string
+          format: date-time
+        progress_pct:
+          type: integer
+        position:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number
+        altitude_ft:
+          type: integer
+        speed_mph:
+          type: integer
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+      required:
+      - error
+      - message
+      - code
+    PaginationMeta:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total_pages:
+          type: integer
+security:
+- bearer_auth: []

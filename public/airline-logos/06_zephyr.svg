@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <g fill="none" stroke="#2EAE5C" stroke-width="8" stroke-linecap="round">
+      <path d="M20 38 H66 a10 10 0 1 0 -10 -10"/>
+      <path d="M20 54 H78 a8 8 0 1 1 -8 8"/>
+      <path d="M20 70 H58 a8 8 0 1 0 -8 8"/>
+    </g></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="Liberation Sans" font-weight="bold" font-size="33"
+        fill="#1E8A47" >Zephyr</text>
+</svg>

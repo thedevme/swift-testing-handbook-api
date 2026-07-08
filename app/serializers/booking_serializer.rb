@@ -8,6 +8,7 @@ class BookingSerializer
       id: @booking.id,
       reference: @booking.reference,
       status: @booking.status,
+      trip_type: @booking.trip_type,
       flight: flight_json,
       seat: seat_json,
       passenger_name: @booking.passenger_name,

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <g fill="#3FA9F5">
+      <circle cx="40" cy="58" r="16"/>
+      <circle cx="58" cy="50" r="20"/>
+      <circle cx="74" cy="60" r="14"/>
+      <rect x="40" y="58" width="36" height="18" rx="9"/>
+    </g>
+    <rect x="34" y="74" width="50" height="6" rx="3" fill="#3FA9F5" opacity="0.5"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans" font-weight="bold" font-size="31"
+        fill="#2C7FB8" >Nimbus Air</text>
+</svg>

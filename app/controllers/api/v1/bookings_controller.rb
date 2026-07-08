@@ -5,6 +5,16 @@ module Api
       def create
         flight = Flight.find(params[:flight_id])
         seat = flight.seats.find(params[:seat_id])
+        trip_type = params[:trip_type] || 'one_way'
+
+        # Validate trip_type
+        unless %w[one_way round_trip multi_city].include?(trip_type)
+          return render_error(
+            code: 'INVALID_TRIP_TYPE',
+            message: 'Trip type must be one_way, round_trip, or multi_city',
+            status: :unprocessable_entity
+          )
+        end
 
         # Check flight status
         if flight.cancelled?
@@ -34,7 +44,8 @@ module Api
         booking = current_api_key.bookings.create!(
           flight: flight,
           seat: seat,
-          passenger_name: params[:passenger_name]
+          passenger_name: params[:passenger_name],
+          trip_type: trip_type
         )
 
         render json: { data: BookingSerializer.new(booking).as_json }, status: :created

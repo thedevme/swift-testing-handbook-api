@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <path d="M50 20 L78 50 H62 V84 H38 V50 H22 Z" fill="#3D4A5C"/>
+    <path d="M50 20 L78 50 H62 V60 L50 40 Z" fill="#8A97A8"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans Condensed" font-weight="bold" font-size="28"
+        fill="#2C3645" letter-spacing="1">NORTHWIND</text>
+</svg>

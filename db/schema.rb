@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_08_165501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,25 +26,46 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "airlines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "airline_type"
+    t.string "code", limit: 2, null: false
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.string "logo_png"
+    t.string "logo_svg"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_airlines_on_code", unique: true
+    t.index ["name"], name: "index_airlines_on_name"
+  end
+
   create_table "airports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "city", null: false
     t.string "code", limit: 3, null: false
     t.string "country", null: false
     t.datetime "created_at", null: false
+    t.integer "elevation_ft"
+    t.integer "hub_tier", default: 3
     t.boolean "is_international", default: false
     t.decimal "latitude", precision: 10, scale: 6, null: false
     t.decimal "longitude", precision: 10, scale: 6, null: false
     t.string "name", null: false
+    t.string "state"
+    t.string "timezone"
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_airports_on_code", unique: true
+    t.index ["hub_tier"], name: "index_airports_on_hub_tier"
+    t.index ["state"], name: "index_airports_on_state"
   end
 
   create_table "api_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.string "reader_name"
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_api_keys_on_email", unique: true
+    t.index ["reader_name"], name: "index_api_keys_on_reader_name"
     t.index ["token"], name: "index_api_keys_on_token", unique: true
   end
 
@@ -52,16 +73,38 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
     t.uuid "api_key_id", null: false
     t.datetime "created_at", null: false
     t.uuid "flight_id", null: false
+    t.boolean "is_outbound", default: true, null: false
     t.string "passenger_name", limit: 100, null: false
     t.string "reference", limit: 6, null: false
+    t.uuid "return_booking_id"
+    t.uuid "seat_id", null: false
+    t.string "status", default: "confirmed", null: false
+    t.string "trip_type", default: "one_way", null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_key_id", "flight_id"], name: "index_bookings_on_api_key_id_and_flight_id", unique: true, where: "((status)::text = 'confirmed'::text)"
+    t.index ["api_key_id", "return_booking_id"], name: "index_bookings_on_api_key_id_and_return_booking_id"
+    t.index ["api_key_id"], name: "index_bookings_on_api_key_id"
+    t.index ["flight_id"], name: "index_bookings_on_flight_id"
+    t.index ["is_outbound"], name: "index_bookings_on_is_outbound"
+    t.index ["reference"], name: "index_bookings_on_reference", unique: true
+    t.index ["return_booking_id"], name: "index_bookings_on_return_booking_id"
+    t.index ["seat_id"], name: "index_bookings_on_seat_id"
+    t.index ["trip_type"], name: "index_bookings_on_trip_type"
+  end
+
+  create_table "flight_legs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "flight_id", null: false
+    t.uuid "itinerary_id", null: false
+    t.integer "leg_number", null: false
     t.uuid "seat_id", null: false
     t.string "status", default: "confirmed", null: false
     t.datetime "updated_at", null: false
-    t.index ["api_key_id", "flight_id"], name: "index_bookings_on_api_key_id_and_flight_id", unique: true, where: "((status)::text = 'confirmed'::text)"
-    t.index ["api_key_id"], name: "index_bookings_on_api_key_id"
-    t.index ["flight_id"], name: "index_bookings_on_flight_id"
-    t.index ["reference"], name: "index_bookings_on_reference", unique: true
-    t.index ["seat_id"], name: "index_bookings_on_seat_id"
+    t.index ["flight_id"], name: "index_flight_legs_on_flight_id"
+    t.index ["itinerary_id", "leg_number"], name: "index_flight_legs_on_itinerary_id_and_leg_number", unique: true
+    t.index ["itinerary_id"], name: "index_flight_legs_on_itinerary_id"
+    t.index ["seat_id"], name: "index_flight_legs_on_seat_id"
+    t.index ["status"], name: "index_flight_legs_on_status"
   end
 
   create_table "flights", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -87,6 +130,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
     t.index ["status"], name: "index_flights_on_status"
   end
 
+  create_table "itineraries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "api_key_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "leg_count", default: 0, null: false
+    t.string "passenger_name", limit: 100, null: false
+    t.string "reference", limit: 8, null: false
+    t.string "status", default: "confirmed", null: false
+    t.integer "total_price_cents", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["api_key_id", "status"], name: "index_itineraries_on_api_key_id_and_status"
+    t.index ["api_key_id"], name: "index_itineraries_on_api_key_id"
+    t.index ["reference"], name: "index_itineraries_on_reference", unique: true
+    t.index ["status"], name: "index_itineraries_on_status"
+  end
+
   create_table "purchases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -101,6 +159,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
 
   create_table "routes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "aircraft_id", null: false
+    t.uuid "airline_id"
     t.datetime "created_at", null: false
     t.integer "departures_per_day", null: false
     t.uuid "destination_id", null: false
@@ -110,6 +169,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
     t.uuid "origin_id", null: false
     t.datetime "updated_at", null: false
     t.index ["aircraft_id"], name: "index_routes_on_aircraft_id"
+    t.index ["airline_id"], name: "index_routes_on_airline_id"
     t.index ["destination_id"], name: "index_routes_on_destination_id"
     t.index ["origin_id", "destination_id"], name: "index_routes_on_origin_id_and_destination_id", unique: true
     t.index ["origin_id"], name: "index_routes_on_origin_id"
@@ -134,13 +194,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_082321) do
     t.index ["seat_class"], name: "index_seats_on_seat_class"
   end
 
+  create_table "weather_conditions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "airport_id", null: false
+    t.string "condition", null: false
+    t.datetime "created_at", null: false
+    t.integer "feels_like_f"
+    t.date "forecast_date", null: false
+    t.integer "humidity_percent"
+    t.string "icon"
+    t.integer "precipitation_chance_percent"
+    t.integer "temperature_f", null: false
+    t.datetime "updated_at", null: false
+    t.integer "visibility_miles"
+    t.string "wind_direction"
+    t.integer "wind_speed_mph"
+    t.index ["airport_id", "forecast_date"], name: "index_weather_conditions_on_airport_id_and_forecast_date", unique: true
+    t.index ["airport_id"], name: "index_weather_conditions_on_airport_id"
+    t.index ["forecast_date"], name: "index_weather_conditions_on_forecast_date"
+  end
+
   add_foreign_key "bookings", "api_keys"
+  add_foreign_key "bookings", "bookings", column: "return_booking_id"
   add_foreign_key "bookings", "flights"
   add_foreign_key "bookings", "seats"
+  add_foreign_key "flight_legs", "flights"
+  add_foreign_key "flight_legs", "itineraries"
+  add_foreign_key "flight_legs", "seats"
   add_foreign_key "flights", "aircraft"
   add_foreign_key "flights", "routes"
+  add_foreign_key "itineraries", "api_keys"
   add_foreign_key "routes", "aircraft"
+  add_foreign_key "routes", "airlines"
   add_foreign_key "routes", "airports", column: "destination_id"
   add_foreign_key "routes", "airports", column: "origin_id"
   add_foreign_key "seats", "flights"
+  add_foreign_key "weather_conditions", "airports"
 end

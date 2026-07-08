@@ -1,10 +1,37 @@
 class Airport < ApplicationRecord
   has_many :departing_routes, class_name: 'Route', foreign_key: :origin_id
   has_many :arriving_routes, class_name: 'Route', foreign_key: :destination_id
+  has_many :weather_conditions, dependent: :destroy
 
   validates :code, presence: true, uniqueness: true, length: { is: 3 }
   validates :name, :city, :country, presence: true
   validates :latitude, :longitude, presence: true
+
+  # Hub tier scopes for route generation
+  scope :tier_1_hubs, -> { where(hub_tier: 1) }
+  scope :tier_2_hubs, -> { where(hub_tier: 2) }
+  scope :spoke_cities, -> { where(hub_tier: 3) }
+  scope :domestic, -> { where(is_international: false) }
+  scope :international, -> { where(is_international: true) }
+
+  # Hub methods
+  def hub?
+    hub_tier && hub_tier <= 2
+  end
+
+  def major_hub?
+    hub_tier == 1
+  end
+
+  # Get weather for a specific date
+  def weather_for(date = Date.current)
+    weather_conditions.find_by(forecast_date: date)
+  end
+
+  # Get current weather
+  def current_weather
+    weather_for(Date.current)
+  end
 
   COORDINATES = {
     "TPA" => { lat: 27.9755, lng: -82.5332 },

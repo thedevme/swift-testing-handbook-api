@@ -1,0 +1,289 @@
+{
+  "info": {
+    "name": "SkyBook Flight API",
+    "_postman_id": "skybook-api-collection",
+    "description": "SkyBook Flight API for Swift Testing Handbook",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "api_key",
+      "value": "sk_b462f3a3c7fc454f5f2c3a05b5028d05"
+    },
+    {
+      "key": "flight_id",
+      "value": "006f8caf-a94f-4f67-9434-d27ee46a9b9c"
+    },
+    {
+      "key": "seat_id",
+      "value": "03773cac-9957-43da-89fd-5a903993f62f"
+    },
+    {
+      "key": "booking_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Flights",
+      "item": [
+        {
+          "name": "List Flights",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/flights?origin=TPA&destination=JFK&status=scheduled&sort=price_asc&page=1&per_page=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "flights"],
+              "query": [
+                { "key": "origin", "value": "TPA", "description": "Filter by origin airport code" },
+                { "key": "destination", "value": "JFK", "description": "Filter by destination airport code" },
+                { "key": "status", "value": "scheduled", "description": "Filter by status: scheduled, on_time, delayed, boarding, departed, arrived, cancelled, diverted" },
+                { "key": "sort", "value": "price_asc", "description": "Sort: price_asc, price_desc, duration" },
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "20" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('flight_id', jsonData.data[0].id);",
+                  "    console.log('Set flight_id to: ' + jsonData.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Flight",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/flights/{{flight_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "flights", "{{flight_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seats",
+      "item": [
+        {
+          "name": "List Seats for Flight",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/flights/{{flight_id}}/seats?class=economy&available=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "flights", "{{flight_id}}", "seats"],
+              "query": [
+                { "key": "class", "value": "economy", "description": "Filter: economy, comfort_plus, business, first" },
+                { "key": "available", "value": "true", "description": "Filter by availability" },
+                { "key": "type", "value": "", "description": "Filter: window, middle, aisle", "disabled": true },
+                { "key": "deck", "value": "", "description": "Filter: main, upper (A380 only)", "disabled": true }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.seat_map) {",
+                  "    var economy = jsonData.data.seat_map.economy;",
+                  "    if (economy && economy.length > 0) {",
+                  "        var availableSeat = economy.find(s => s.is_available);",
+                  "        if (availableSeat) {",
+                  "            pm.collectionVariables.set('seat_id', availableSeat.id);",
+                  "            console.log('Set seat_id to: ' + availableSeat.id);",
+                  "        }",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Seat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/flights/{{flight_id}}/seats/{{seat_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "flights", "{{flight_id}}", "seats", "{{seat_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flight_id\": \"{{flight_id}}\",\n  \"seat_id\": \"{{seat_id}}\",\n  \"passenger_name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/bookings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "bookings"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.id) {",
+                  "    pm.collectionVariables.set('booking_id', jsonData.data.id);",
+                  "    console.log('Set booking_id to: ' + jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bookings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bookings/{{booking_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "bookings", "{{booking_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/bookings/{{booking_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "bookings", "{{booking_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Live Tracking",
+      "item": [
+        {
+          "name": "List Flights In Air",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/live/flights",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "live", "flights"]
+            }
+          }
+        },
+        {
+          "name": "Get Live Flight",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/live/flights/{{flight_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "live", "flights", "{{flight_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/live/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "live", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Recover API Key",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/keys/recover",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "keys", "recover"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

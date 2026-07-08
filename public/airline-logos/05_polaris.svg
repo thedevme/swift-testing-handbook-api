@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <path d="M50 22 L58 46 L82 54 L58 62 L50 86 L42 62 L18 54 L42 46 Z" fill="#1B3B8B"/>
+    <circle cx="50" cy="54" r="6" fill="#fff" opacity="0.9"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans" font-weight="bold" font-size="33"
+        fill="#1B3B8B" >Polaris</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="396" height="108" viewBox="0 0 396 108">
+  <g transform="translate(0,0)">
+    <path d="M16 64 Q33 44 50 64 T84 64" fill="none" stroke="#2F80ED" stroke-width="8" stroke-linecap="round"/>
+    <path d="M16 78 Q33 58 50 78 T84 78" fill="none" stroke="#56CCF2" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+    <path d="M16 50 Q33 30 50 50 T84 50" fill="none" stroke="#2F80ED" stroke-width="6" stroke-linecap="round" opacity="0.4"/></g>
+  <text x="110" y="54.0" dominant-baseline="central" text-anchor="start"
+        font-family="DejaVu Sans" font-weight="bold" font-size="32"
+        fill="#1F5FB8" >Cascade</text>
+</svg>
