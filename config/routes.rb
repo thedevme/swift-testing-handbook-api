@@ -37,6 +37,9 @@ Rails.application.routes.draw do
 
       # Airlines
       resources :airlines, only: [:index, :show]
+
+      # Cities
+      resources :cities, only: [:index]
     end
   end
 

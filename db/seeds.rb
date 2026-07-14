@@ -130,32 +130,93 @@ aircraft_configs.each do |config|
 end
 puts "Created #{aircraft.count} aircraft"
 
-# Airports
+# Airports - 72 cities across all regions
 airports_data = [
-  # Domestic
-  { code: 'TPA', name: 'Tampa International', city: 'Tampa', country: 'USA', latitude: 27.9755, longitude: -82.5332, is_international: false },
-  { code: 'JFK', name: 'John F. Kennedy International', city: 'New York', country: 'USA', latitude: 40.6413, longitude: -73.7781, is_international: false },
-  { code: 'LAX', name: 'Los Angeles International', city: 'Los Angeles', country: 'USA', latitude: 33.9425, longitude: -118.4081, is_international: false },
-  { code: 'ORD', name: "O'Hare International", city: 'Chicago', country: 'USA', latitude: 41.9742, longitude: -87.9073, is_international: false },
-  { code: 'BOS', name: 'Logan International', city: 'Boston', country: 'USA', latitude: 42.3656, longitude: -71.0096, is_international: false },
-  { code: 'MIA', name: 'Miami International', city: 'Miami', country: 'USA', latitude: 25.7959, longitude: -80.2870, is_international: false },
-  { code: 'SEA', name: 'Seattle-Tacoma International', city: 'Seattle', country: 'USA', latitude: 47.4502, longitude: -122.3088, is_international: false },
-  { code: 'DEN', name: 'Denver International', city: 'Denver', country: 'USA', latitude: 39.8561, longitude: -104.6737, is_international: false },
-  { code: 'ATL', name: 'Hartsfield-Jackson International', city: 'Atlanta', country: 'USA', latitude: 33.6407, longitude: -84.4277, is_international: false },
-  { code: 'DFW', name: 'Dallas/Fort Worth International', city: 'Dallas', country: 'USA', latitude: 32.8998, longitude: -97.0403, is_international: false },
-  { code: 'LAS', name: 'Harry Reid International', city: 'Las Vegas', country: 'USA', latitude: 36.0840, longitude: -115.1537, is_international: false },
-  # International
-  { code: 'LHR', name: 'Heathrow', city: 'London', country: 'UK', latitude: 51.4700, longitude: -0.4543, is_international: true },
-  { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'France', latitude: 49.0097, longitude: 2.5479, is_international: true },
-  { code: 'NRT', name: 'Narita International', city: 'Tokyo', country: 'Japan', latitude: 35.7720, longitude: 140.3929, is_international: true },
-  { code: 'SYD', name: 'Sydney Kingsford Smith', city: 'Sydney', country: 'Australia', latitude: -33.9399, longitude: 151.1753, is_international: true },
-  { code: 'DXB', name: 'Dubai International', city: 'Dubai', country: 'UAE', latitude: 25.2532, longitude: 55.3657, is_international: true },
-  { code: 'YYZ', name: 'Toronto Pearson', city: 'Toronto', country: 'Canada', latitude: 43.6777, longitude: -79.6248, is_international: true },
-  { code: 'MEX', name: 'Mexico City International', city: 'Mexico City', country: 'Mexico', latitude: 19.4363, longitude: -99.0721, is_international: true },
-  { code: 'AMS', name: 'Amsterdam Schiphol', city: 'Amsterdam', country: 'Netherlands', latitude: 52.3105, longitude: 4.7683, is_international: true },
-  { code: 'SIN', name: 'Singapore Changi', city: 'Singapore', country: 'Singapore', latitude: 1.3644, longitude: 103.9915, is_international: true },
-  { code: 'GRU', name: 'São Paulo-Guarulhos', city: 'São Paulo', country: 'Brazil', latitude: -23.4356, longitude: -46.4731, is_international: true },
-  { code: 'DUB', name: 'Dublin Airport', city: 'Dublin', country: 'Ireland', latitude: 53.4264, longitude: -6.2499, is_international: true }
+  # ===== US MAJOR HUBS (Tier 1) =====
+  { code: 'TPA', name: 'Tampa International', city: 'Tampa', state: 'FL', country: 'USA', latitude: 27.9755, longitude: -82.5332, is_international: false, hub_tier: 1 },
+  { code: 'JFK', name: 'John F. Kennedy International', city: 'New York', state: 'NY', country: 'USA', latitude: 40.6413, longitude: -73.7781, is_international: false, hub_tier: 1 },
+  { code: 'LAX', name: 'Los Angeles International', city: 'Los Angeles', state: 'CA', country: 'USA', latitude: 33.9425, longitude: -118.4081, is_international: false, hub_tier: 1 },
+  { code: 'ORD', name: "O'Hare International", city: 'Chicago', state: 'IL', country: 'USA', latitude: 41.9742, longitude: -87.9073, is_international: false, hub_tier: 1 },
+  { code: 'BOS', name: 'Logan International', city: 'Boston', state: 'MA', country: 'USA', latitude: 42.3656, longitude: -71.0096, is_international: false, hub_tier: 1 },
+  { code: 'MIA', name: 'Miami International', city: 'Miami', state: 'FL', country: 'USA', latitude: 25.7959, longitude: -80.2870, is_international: false, hub_tier: 1 },
+  { code: 'SEA', name: 'Seattle-Tacoma International', city: 'Seattle', state: 'WA', country: 'USA', latitude: 47.4502, longitude: -122.3088, is_international: false, hub_tier: 1 },
+  { code: 'DEN', name: 'Denver International', city: 'Denver', state: 'CO', country: 'USA', latitude: 39.8561, longitude: -104.6737, is_international: false, hub_tier: 1 },
+  { code: 'ATL', name: 'Hartsfield-Jackson International', city: 'Atlanta', state: 'GA', country: 'USA', latitude: 33.6407, longitude: -84.4277, is_international: false, hub_tier: 1 },
+  { code: 'DFW', name: 'Dallas/Fort Worth International', city: 'Dallas', state: 'TX', country: 'USA', latitude: 32.8998, longitude: -97.0403, is_international: false, hub_tier: 1 },
+  { code: 'LAS', name: 'Harry Reid International', city: 'Las Vegas', state: 'NV', country: 'USA', latitude: 36.0840, longitude: -115.1537, is_international: false, hub_tier: 1 },
+  { code: 'SFO', name: 'San Francisco International', city: 'San Francisco', state: 'CA', country: 'USA', latitude: 37.6213, longitude: -122.3790, is_international: false, hub_tier: 1 },
+
+  # ===== US MID-SIZE (Tier 2) =====
+  { code: 'PHX', name: 'Phoenix Sky Harbor International', city: 'Phoenix', state: 'AZ', country: 'USA', latitude: 33.4342, longitude: -112.0080, is_international: false, hub_tier: 2 },
+  { code: 'MSP', name: 'Minneapolis-St Paul International', city: 'Minneapolis', state: 'MN', country: 'USA', latitude: 44.8848, longitude: -93.2223, is_international: false, hub_tier: 2 },
+  { code: 'DTW', name: 'Detroit Metropolitan Wayne County', city: 'Detroit', state: 'MI', country: 'USA', latitude: 42.2124, longitude: -83.3534, is_international: false, hub_tier: 2 },
+  { code: 'EWR', name: 'Newark Liberty International', city: 'Newark', state: 'NJ', country: 'USA', latitude: 40.6895, longitude: -74.1745, is_international: false, hub_tier: 2 },
+  { code: 'PHL', name: 'Philadelphia International', city: 'Philadelphia', state: 'PA', country: 'USA', latitude: 39.8729, longitude: -75.2437, is_international: false, hub_tier: 2 },
+  { code: 'CLT', name: 'Charlotte Douglas International', city: 'Charlotte', state: 'NC', country: 'USA', latitude: 35.2140, longitude: -80.9431, is_international: false, hub_tier: 2 },
+  { code: 'MCO', name: 'Orlando International', city: 'Orlando', state: 'FL', country: 'USA', latitude: 28.4294, longitude: -81.3089, is_international: false, hub_tier: 2 },
+  { code: 'IAH', name: 'George Bush Intercontinental', city: 'Houston', state: 'TX', country: 'USA', latitude: 29.9902, longitude: -95.3368, is_international: false, hub_tier: 2 },
+  { code: 'SLC', name: 'Salt Lake City International', city: 'Salt Lake City', state: 'UT', country: 'USA', latitude: 40.7899, longitude: -111.9791, is_international: false, hub_tier: 2 },
+  { code: 'PDX', name: 'Portland International', city: 'Portland', state: 'OR', country: 'USA', latitude: 45.5898, longitude: -122.5951, is_international: false, hub_tier: 2 },
+  { code: 'SAN', name: 'San Diego International', city: 'San Diego', state: 'CA', country: 'USA', latitude: 32.7338, longitude: -117.1933, is_international: false, hub_tier: 2 },
+  { code: 'AUS', name: 'Austin-Bergstrom International', city: 'Austin', state: 'TX', country: 'USA', latitude: 30.1975, longitude: -97.6664, is_international: false, hub_tier: 2 },
+
+  # ===== US REGIONAL (Tier 3) =====
+  { code: 'RDU', name: 'Raleigh-Durham International', city: 'Raleigh', state: 'NC', country: 'USA', latitude: 35.8776, longitude: -78.7875, is_international: false, hub_tier: 3 },
+  { code: 'BNA', name: 'Nashville International', city: 'Nashville', state: 'TN', country: 'USA', latitude: 36.1245, longitude: -86.6782, is_international: false, hub_tier: 3 },
+  { code: 'STL', name: 'St. Louis Lambert International', city: 'St. Louis', state: 'MO', country: 'USA', latitude: 38.7487, longitude: -90.3700, is_international: false, hub_tier: 3 },
+  { code: 'CVG', name: 'Cincinnati/Northern Kentucky International', city: 'Cincinnati', state: 'OH', country: 'USA', latitude: 39.0488, longitude: -84.6678, is_international: false, hub_tier: 3 },
+  { code: 'PIT', name: 'Pittsburgh International', city: 'Pittsburgh', state: 'PA', country: 'USA', latitude: 40.4915, longitude: -80.2329, is_international: false, hub_tier: 3 },
+  { code: 'IND', name: 'Indianapolis International', city: 'Indianapolis', state: 'IN', country: 'USA', latitude: 39.7173, longitude: -86.2944, is_international: false, hub_tier: 3 },
+  { code: 'MKE', name: 'Milwaukee Mitchell International', city: 'Milwaukee', state: 'WI', country: 'USA', latitude: 42.9472, longitude: -87.8966, is_international: false, hub_tier: 3 },
+  { code: 'RNO', name: 'Reno-Tahoe International', city: 'Reno', state: 'NV', country: 'USA', latitude: 39.4991, longitude: -119.7681, is_international: false, hub_tier: 3 },
+  { code: 'BUF', name: 'Buffalo Niagara International', city: 'Buffalo', state: 'NY', country: 'USA', latitude: 42.9405, longitude: -78.7322, is_international: false, hub_tier: 3 },
+  { code: 'OMA', name: 'Eppley Airfield', city: 'Omaha', state: 'NE', country: 'USA', latitude: 41.3032, longitude: -95.8941, is_international: false, hub_tier: 3 },
+  { code: 'SAT', name: 'San Antonio International', city: 'San Antonio', state: 'TX', country: 'USA', latitude: 29.5337, longitude: -98.4698, is_international: false, hub_tier: 3 },
+  { code: 'JAX', name: 'Jacksonville International', city: 'Jacksonville', state: 'FL', country: 'USA', latitude: 30.4941, longitude: -81.6879, is_international: false, hub_tier: 3 },
+  { code: 'BDL', name: 'Bradley International', city: 'Hartford', state: 'CT', country: 'USA', latitude: 41.9389, longitude: -72.6832, is_international: false, hub_tier: 3 },
+  { code: 'SMF', name: 'Sacramento International', city: 'Sacramento', state: 'CA', country: 'USA', latitude: 38.6954, longitude: -121.5901, is_international: false, hub_tier: 3 },
+  { code: 'RSW', name: 'Southwest Florida International', city: 'Fort Myers', state: 'FL', country: 'USA', latitude: 26.5362, longitude: -81.7552, is_international: false, hub_tier: 3 },
+  { code: 'ABQ', name: 'Albuquerque International Sunport', city: 'Albuquerque', state: 'NM', country: 'USA', latitude: 35.0402, longitude: -106.6092, is_international: false, hub_tier: 3 },
+
+  # ===== EUROPE =====
+  { code: 'LHR', name: 'Heathrow', city: 'London', country: 'UK', latitude: 51.4700, longitude: -0.4543, is_international: true, hub_tier: 1 },
+  { code: 'CDG', name: 'Charles de Gaulle', city: 'Paris', country: 'France', latitude: 49.0097, longitude: 2.5479, is_international: true, hub_tier: 1 },
+  { code: 'AMS', name: 'Amsterdam Schiphol', city: 'Amsterdam', country: 'Netherlands', latitude: 52.3105, longitude: 4.7683, is_international: true, hub_tier: 1 },
+  { code: 'DUB', name: 'Dublin Airport', city: 'Dublin', country: 'Ireland', latitude: 53.4264, longitude: -6.2499, is_international: true, hub_tier: 2 },
+  { code: 'FRA', name: 'Frankfurt Airport', city: 'Frankfurt', country: 'Germany', latitude: 50.0379, longitude: 8.5622, is_international: true, hub_tier: 1 },
+  { code: 'MAD', name: 'Adolfo Suárez Madrid-Barajas', city: 'Madrid', country: 'Spain', latitude: 40.4983, longitude: -3.5676, is_international: true, hub_tier: 1 },
+  { code: 'FCO', name: 'Leonardo da Vinci-Fiumicino', city: 'Rome', country: 'Italy', latitude: 41.8003, longitude: 12.2389, is_international: true, hub_tier: 1 },
+  { code: 'ZRH', name: 'Zurich Airport', city: 'Zurich', country: 'Switzerland', latitude: 47.4647, longitude: 8.5492, is_international: true, hub_tier: 1 },
+  { code: 'CPH', name: 'Copenhagen Airport', city: 'Copenhagen', country: 'Denmark', latitude: 55.6180, longitude: 12.6508, is_international: true, hub_tier: 1 },
+  { code: 'VIE', name: 'Vienna International Airport', city: 'Vienna', country: 'Austria', latitude: 48.1103, longitude: 16.5697, is_international: true, hub_tier: 1 },
+  { code: 'MUC', name: 'Munich Airport', city: 'Munich', country: 'Germany', latitude: 48.3538, longitude: 11.7861, is_international: true, hub_tier: 1 },
+
+  # ===== ASIA-PACIFIC =====
+  { code: 'NRT', name: 'Narita International', city: 'Tokyo', country: 'Japan', latitude: 35.7720, longitude: 140.3929, is_international: true, hub_tier: 1 },
+  { code: 'SYD', name: 'Sydney Kingsford Smith', city: 'Sydney', country: 'Australia', latitude: -33.9399, longitude: 151.1753, is_international: true, hub_tier: 1 },
+  { code: 'SIN', name: 'Singapore Changi', city: 'Singapore', country: 'Singapore', latitude: 1.3644, longitude: 103.9915, is_international: true, hub_tier: 1 },
+  { code: 'HKG', name: 'Hong Kong International', city: 'Hong Kong', country: 'China', latitude: 22.3080, longitude: 113.9185, is_international: true, hub_tier: 1 },
+  { code: 'ICN', name: 'Incheon International', city: 'Seoul', country: 'South Korea', latitude: 37.4602, longitude: 126.4407, is_international: true, hub_tier: 1 },
+  { code: 'BKK', name: 'Suvarnabhumi Airport', city: 'Bangkok', country: 'Thailand', latitude: 13.6900, longitude: 100.7501, is_international: true, hub_tier: 1 },
+  { code: 'PVG', name: 'Shanghai Pudong International', city: 'Shanghai', country: 'China', latitude: 31.1443, longitude: 121.8083, is_international: true, hub_tier: 1 },
+  { code: 'PEK', name: 'Beijing Capital International', city: 'Beijing', country: 'China', latitude: 40.0799, longitude: 116.6031, is_international: true, hub_tier: 1 },
+  { code: 'DEL', name: 'Indira Gandhi International', city: 'Delhi', country: 'India', latitude: 28.5665, longitude: 77.1031, is_international: true, hub_tier: 1 },
+
+  # ===== MIDDLE EAST & AFRICA =====
+  { code: 'DXB', name: 'Dubai International', city: 'Dubai', country: 'UAE', latitude: 25.2532, longitude: 55.3657, is_international: true, hub_tier: 1 },
+  { code: 'DOH', name: 'Hamad International', city: 'Doha', country: 'Qatar', latitude: 25.2731, longitude: 51.6080, is_international: true, hub_tier: 1 },
+  { code: 'CAI', name: 'Cairo International', city: 'Cairo', country: 'Egypt', latitude: 30.1219, longitude: 31.4056, is_international: true, hub_tier: 1 },
+  { code: 'JNB', name: 'OR Tambo International', city: 'Johannesburg', country: 'South Africa', latitude: -26.1367, longitude: 28.2411, is_international: true, hub_tier: 1 },
+
+  # ===== LATIN AMERICA & CANADA =====
+  { code: 'YYZ', name: 'Toronto Pearson', city: 'Toronto', country: 'Canada', latitude: 43.6777, longitude: -79.6248, is_international: true, hub_tier: 1 },
+  { code: 'MEX', name: 'Mexico City International', city: 'Mexico City', country: 'Mexico', latitude: 19.4363, longitude: -99.0721, is_international: true, hub_tier: 1 },
+  { code: 'GRU', name: 'São Paulo-Guarulhos', city: 'São Paulo', country: 'Brazil', latitude: -23.4356, longitude: -46.4731, is_international: true, hub_tier: 1 },
+  { code: 'BOG', name: 'El Dorado International', city: 'Bogotá', country: 'Colombia', latitude: 4.7016, longitude: -74.1469, is_international: true, hub_tier: 1 },
+  { code: 'SCL', name: 'Arturo Merino Benítez International', city: 'Santiago', country: 'Chile', latitude: -33.3930, longitude: -70.7858, is_international: true, hub_tier: 1 },
+  { code: 'EZE', name: 'Ministro Pistarini International', city: 'Buenos Aires', country: 'Argentina', latitude: -34.8222, longitude: -58.5358, is_international: true, hub_tier: 1 },
+  { code: 'LIM', name: 'Jorge Chávez International', city: 'Lima', country: 'Peru', latitude: -12.0219, longitude: -77.1143, is_international: true, hub_tier: 1 },
+  { code: 'PTY', name: 'Tocumen International', city: 'Panama City', country: 'Panama', latitude: 9.0714, longitude: -79.3834, is_international: true, hub_tier: 1 }
 ]
 
 airports = {}

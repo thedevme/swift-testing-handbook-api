@@ -261,16 +261,68 @@ paths:
           - DEN
           - ATL
           - DFW
+          - LAS
+          - SFO
+          - PHX
+          - MSP
+          - DTW
+          - EWR
+          - PHL
+          - CLT
+          - MCO
+          - IAH
+          - SLC
+          - PDX
+          - SAN
+          - AUS
+          - RDU
+          - BNA
+          - STL
+          - CVG
+          - PIT
+          - IND
+          - MKE
+          - RNO
+          - BUF
+          - OMA
+          - SAT
+          - JAX
+          - BDL
+          - SMF
+          - RSW
+          - ABQ
           - LHR
           - CDG
+          - AMS
+          - DUB
+          - FRA
+          - MAD
+          - FCO
+          - ZRH
+          - CPH
+          - VIE
+          - MUC
           - NRT
           - SYD
+          - SIN
+          - HKG
+          - ICN
+          - BKK
+          - PVG
+          - PEK
+          - DEL
           - DXB
+          - DOH
+          - CAI
+          - JNB
           - YYZ
           - MEX
-          - AMS
-          - SIN
           - GRU
+          - BOG
+          - SCL
+          - EZE
+          - LIM
+          - PTY
       - name: destination
         in: query
         required: false
@@ -288,16 +340,68 @@ paths:
           - DEN
           - ATL
           - DFW
+          - LAS
+          - SFO
+          - PHX
+          - MSP
+          - DTW
+          - EWR
+          - PHL
+          - CLT
+          - MCO
+          - IAH
+          - SLC
+          - PDX
+          - SAN
+          - AUS
+          - RDU
+          - BNA
+          - STL
+          - CVG
+          - PIT
+          - IND
+          - MKE
+          - RNO
+          - BUF
+          - OMA
+          - SAT
+          - JAX
+          - BDL
+          - SMF
+          - RSW
+          - ABQ
           - LHR
           - CDG
+          - AMS
+          - DUB
+          - FRA
+          - MAD
+          - FCO
+          - ZRH
+          - CPH
+          - VIE
+          - MUC
           - NRT
           - SYD
+          - SIN
+          - HKG
+          - ICN
+          - BKK
+          - PVG
+          - PEK
+          - DEL
           - DXB
+          - DOH
+          - CAI
+          - JNB
           - YYZ
           - MEX
-          - AMS
-          - SIN
           - GRU
+          - BOG
+          - SCL
+          - EZE
+          - LIM
+          - PTY
       - name: status
         in: query
         required: false
@@ -395,6 +499,75 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/api/v1/cities":
+    get:
+      summary: List all cities
+      tags:
+      - Cities
+      description: |
+        Returns all cities with their airports, grouped by city name.
+
+        Cities can be filtered by country, international status, or hub tier.
+        Useful for populating city pickers and autocomplete dropdowns.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: country
+        in: query
+        required: false
+        description: Filter by country (e.g., "USA", "UK", "France")
+        schema:
+          type: string
+      - name: international
+        in: query
+        required: false
+        description: Filter by international status (true/false)
+        schema:
+          type: boolean
+      - name: hub_tier
+        in: query
+        required: false
+        description: Filter by hub tier (1=Major Hub, 2=Mid-size, 3=Regional)
+        schema:
+          type: integer
+          enum:
+          - 1
+          - 2
+          - 3
+      responses:
+        '200':
+          description: cities returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/City"
+                  meta:
+                    type: object
+                    properties:
+                      total_cities:
+                        type: integer
+                      total_airports:
+                        type: integer
+                      filters:
+                        type: object
+                        properties:
+                          country:
+                            type: string
+                          international:
+                            type: boolean
+                          hub_tier:
+                            type: integer
         '401':
           description: unauthorized
           content:
@@ -790,6 +963,42 @@ components:
       scheme: bearer
       description: API key with sk_ prefix
   schemas:
+    City:
+      type: object
+      properties:
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          nullable: true
+          example: NY
+        is_international:
+          type: boolean
+          example: false
+        airports:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: JFK
+              name:
+                type: string
+                example: John F. Kennedy International
+              latitude:
+                type: string
+                example: "40.6413"
+              longitude:
+                type: string
+                example: "-73.7781"
+              hub_tier:
+                type: integer
+                example: 1
     Airport:
       type: object
       properties:
